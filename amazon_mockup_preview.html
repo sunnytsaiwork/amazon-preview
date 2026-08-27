@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amazon 設計預覽工具</title>
+<style>
+  :root{
+    --amz-navy:#131921;
+    --amz-navy2:#232f3e;
+    --amz-orange:#febd69;
+    --amz-orange-dark:#f3a847;
+    --amz-price:#B12704;
+    --amz-link:#007185;
+    --bg:#1a1a1c;
+    --card-bg:#ffffff;
+    --border:#d9dde1;
+    --text-muted:#565959;
+    --panel-bg:#242426;
+    --panel-border:#3a3a3d;
+    --text-onDark:#f0f0f0;
+    --text-onDark-muted:#a3a3a7;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system, "Helvetica Neue", "PingFang TC", "Microsoft JhengHei", Arial, sans-serif;
+    background:var(--bg);
+    color:var(--text-onDark);
+  }
+  header.app-header{
+    background:var(--panel-bg);
+    border-bottom:1px solid var(--panel-border);
+    padding:16px 24px;
+    position:sticky;
+    top:0;
+    z-index:50;
+  }
+  header.app-header h1{
+    margin:0 0 4px 0;
+    font-size:18px;
+    font-weight:700;
+    color:#fff;
+  }
+  header.app-header p{
+    margin:0;
+    font-size:13px;
+    color:var(--text-onDark-muted);
+  }
+  .controls-bar{
+    display:flex;
+    gap:24px;
+    flex-wrap:wrap;
+    align-items:center;
+    padding:12px 24px;
+    background:var(--panel-bg);
+    border-bottom:1px solid var(--panel-border);
+    position:sticky;
+    top:64px;
+    z-index:49;
+  }
+  .control-group{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .control-group label.group-label{
+    font-size:12px;
+    font-weight:700;
+    color:var(--text-onDark-muted);
+    margin-right:4px;
+  }
+  .toggle-btn{
+    border:1px solid var(--panel-border);
+    background:#2d2d30;
+    color:#dcdcdc;
+    padding:7px 14px;
+    font-size:13px;
+    border-radius:6px;
+    cursor:pointer;
+    transition:all .15s;
+  }
+  .toggle-btn.active{
+    background:var(--amz-orange);
+    color:#131921;
+    border-color:var(--amz-orange);
+    font-weight:700;
+  }
+  .toggle-btn:hover:not(.active){
+    background:#3a3a3d;
+  }
+  .add-btn{
+    margin-left:auto;
+    border:1px dashed #666;
+    background:#2d2d30;
+    padding:7px 14px;
+    font-size:13px;
+    border-radius:6px;
+    cursor:pointer;
+    color:#dcdcdc;
+  }
+  .add-btn:hover{ background:#3a3a3d; }
+
+  /* A+ Content: carousel position controls live in a full-width sticky bar ABOVE the
+     preview (not a sidebar) so it never eats into the preview's width — the whole point
+     is that the preview stays the same width a real Amazon page would use. */
+  .aplus-position-bar{
+    display:none;
+    flex-wrap:wrap;
+    gap:10px;
+    padding:10px 24px;
+    background:var(--panel-bg);
+    border-bottom:1px solid var(--panel-border);
+    position:sticky;
+    top:116px;
+    z-index:48;
+  }
+  .aplus-position-bar.visible{ display:flex; }
+  .aplus-position-bar .bar-slot-block{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+    padding:6px 12px;
+    background:#2d2d30;
+    border:1px solid var(--panel-border);
+    border-radius:6px;
+  }
+  .aplus-position-bar .bar-slot-name{
+    font-size:12px;
+    font-weight:700;
+    color:#dcdcdc;
+    white-space:nowrap;
+  }
+
+  main{
+    padding:28px 24px 60px;
+    display:flex;
+    gap:28px;
+    flex-wrap:wrap;
+    align-items:flex-start;
+    justify-content:center;
+  }
+  main#slotsContainer.layout-desktop{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  main#slotsContainer.layout-mobile{
+    flex-direction:row;
+  }
+
+  .design-slot{
+    background:var(--card-bg);
+    border-radius:10px;
+    box-shadow:0 0 0 1px rgba(255,255,255,.06), 0 12px 32px rgba(0,0,0,.45);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+  #slotsContainer.layout-desktop .design-slot{
+    width:100%;
+    max-width:1600px;
+    margin:0 auto;
+  }
+
+  .slot-toolbar{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 12px;
+    border-bottom:1px solid var(--border);
+    background:#fafafa;
+  }
+  .slot-toolbar input.slot-name{
+    font-size:13px;
+    font-weight:700;
+    border:1px solid transparent;
+    background:transparent;
+    padding:4px 6px;
+    border-radius:4px;
+    width:140px;
+  }
+  .slot-toolbar input.slot-name:hover, .slot-toolbar input.slot-name:focus{
+    border-color:var(--border);
+    background:#fff;
+  }
+  .slot-toolbar .hint{
+    font-size:11px;
+    color:var(--text-muted);
+  }
+  .slot-toolbar .remove-btn{
+    margin-left:auto;
+    border:none;
+    background:transparent;
+    color:#999;
+    cursor:pointer;
+    font-size:16px;
+    line-height:1;
+    padding:4px 6px;
+  }
+  .slot-toolbar .remove-btn:hover{ color:#c00; }
+
+  .mock-frame-wrap{ padding:16px; display:flex; justify-content:center; }
+  #slotsContainer.layout-desktop .mock-frame-wrap{ padding:0; display:block; }
+
+  .ph-pattern{
+    background:repeating-linear-gradient(45deg,#f4f4f4,#f4f4f4 10px,#eaeaea 10px,#eaeaea 20px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#999;
+    font-size:11px;
+    text-align:center;
+    padding:8px;
+    line-height:1.5;
+  }
+
+  /* ---------- Desktop chrome (full-bleed page, no browser window frame) ---------- */
+  .browser-frame{
+    width:100%;
+    border:none;
+    border-radius:0;
+    overflow:hidden;
+    background:#fff;
+  }
+  .amz-nav{
+    background:var(--amz-navy);
+    color:#fff;
+    padding:10px 14px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    font-size:12px;
+  }
+  .amz-logo{ font-weight:700; font-size:16px; letter-spacing:.5px; }
+  .amz-logo .dot{ color:var(--amz-orange); }
+  .amz-search{
+    flex:1;
+    display:flex;
+    height:26px;
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .amz-search-cat{ background:#e6e6e6; width:34px; }
+  .amz-search-input{ flex:1; background:#fff; }
+  .amz-search-btn{ width:34px; background:var(--amz-orange); }
+  .amz-nav-sub{
+    background:var(--amz-navy2);
+    color:#dfe3e6;
+    font-size:11px;
+    padding:6px 14px;
+    display:flex;
+    gap:12px;
+  }
+  .amz-breadcrumb{
+    font-size:11px;
+    color:var(--amz-link);
+    padding:8px 16px 0;
+  }
+
+  .pdp-desktop{ display:flex; gap:32px; padding:20px 40px 40px; max-width:1300px; margin:0 auto; }
+  .pdp-desktop .gallery{ width:40%; display:flex; gap:10px; }
+  .pdp-desktop .thumbs{ display:flex; flex-direction:column; gap:6px; width:48px; }
+  .thumb{
+    width:48px;height:48px;border:2px solid var(--border); border-radius:4px; background:#f4f4f4;
+    position:relative; overflow:hidden; cursor:pointer; flex-shrink:0;
+  }
+  .thumb img{ width:100%;height:100%;object-fit:cover; }
+  .thumb.active{ border-color:var(--amz-navy2); }
+  .thumb .thumb-remove{
+    position:absolute; top:0; right:0; width:16px;height:16px; background:rgba(0,0,0,.6); color:#fff;
+    font-size:10px; line-height:16px; text-align:center; display:none; cursor:pointer;
+  }
+  .thumb:hover .thumb-remove{ display:block; }
+  .thumb-add{
+    width:48px;height:48px;border:2px dashed #bbb; border-radius:4px; background:#fafafa;
+    display:flex; align-items:center; justify-content:center; color:#999; font-size:18px; cursor:pointer; flex-shrink:0;
+  }
+  .thumb-add:hover{ background:#f0f0f0; }
+  .pdp-desktop .hero{
+    flex:1;
+    aspect-ratio:1/1;
+    background:#fff;
+    border:1px solid #f0f0f0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    cursor:pointer;
+  }
+  .pdp-desktop .hero img{ max-width:100%; max-height:100%; object-fit:contain; }
+
+  .pdp-desktop .info{ flex:1; }
+  .bar{ background:#e9e9e9; border-radius:3px; height:11px; margin-bottom:8px; }
+  .bar.title1{ width:95%; height:14px; }
+  .bar.title2{ width:70%; height:14px; }
+  .bar.small{ width:40%; height:9px; }
+  .price-row{ font-size:20px; color:var(--amz-price); font-weight:700; margin:14px 0 8px; }
+  .price-row .cents{ font-size:12px; vertical-align:top; }
+  .stars{ color:#de7921; font-size:12px; margin-bottom:6px; }
+  .buybox{
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:12px;
+    margin-top:14px;
+    width:70%;
+  }
+  .buy-btn{
+    background:var(--amz-orange);
+    border:1px solid #a88734;
+    border-radius:16px;
+    padding:6px 0;
+    text-align:center;
+    font-size:12px;
+    font-weight:600;
+    margin-bottom:8px;
+  }
+  .buy-btn.secondary{ background:#f7ca9d; }
+
+  /* A+ Content desktop: full-width Premium module (1464 x 600) */
+  .aplus-desktop-wrap{ background:#fff; padding:24px 40px 40px; max-width:1544px; margin:0 auto; }
+  .aplus-section-title{
+    text-align:left;
+    font-size:20px;
+    font-weight:700;
+    color:#0f1111;
+    margin-bottom:16px;
+  }
+  .aplus-module{
+    width:100%;
+    margin:0;
+    background:#fff;
+    overflow:hidden;
+    cursor:pointer;
+    position:relative;
+  }
+  .aplus-module.empty{ aspect-ratio:1464/600; }
+  .aplus-module img{ width:100%; height:auto; display:block; }
+  .aplus-caption{ font-size:11px; text-align:left; color:#999; margin-top:10px; }
+
+  /* A+ Content: carousel region sitting inside the big image. Width always matches the
+     A+ image itself; only the vertical slice (top/height) is user-adjustable, expressed
+     as px against a fixed reference canvas (1464x600 desktop / 600x450 mobile) so the
+     region still lines up proportionally no matter how tall the uploaded image actually is. */
+  .aplus-carousel-wrap{
+    position:absolute; left:0; width:100%; z-index:5;
+  }
+  .aplus-carousel-box{
+    width:100%; height:100%; position:relative; overflow:hidden;
+    outline:2px dashed rgba(0,0,0,.4); outline-offset:-2px;
+  }
+  .aplus-carousel-box.has-image{ outline:2px solid rgba(0,0,0,.2); cursor:pointer; }
+  .aplus-carousel-box img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .aplus-carousel-badge{
+    position:absolute; top:6px; left:6px; z-index:2;
+    background:rgba(0,0,0,.55); color:#fff; font-size:10px; padding:3px 8px; border-radius:10px; pointer-events:none;
+  }
+  .aplus-carousel-arrow{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:26px; height:26px; border-radius:50%; background:rgba(255,255,255,.92);
+    display:flex; align-items:center; justify-content:center; font-size:13px; color:#111;
+    box-shadow:0 1px 4px rgba(0,0,0,.35); z-index:6; cursor:pointer;
+  }
+  .aplus-carousel-arrow.left{ left:10px; }
+  .aplus-carousel-arrow.right{ right:10px; }
+  .aplus-carousel-controls{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding-top:8px; }
+  .carousel-remove-btn{ border:none; background:transparent; color:#c00; font-size:11px; cursor:pointer; padding:2px 4px; }
+  .aplus-carousel-position{
+    display:flex; align-items:center; gap:16px; flex-wrap:wrap; padding-top:6px; font-size:11px; color:#666;
+  }
+  .aplus-carousel-position .pos-field{ display:flex; align-items:center; gap:6px; }
+  .aplus-carousel-position input[type="range"]{ width:140px; }
+  .aplus-carousel-position .pos-readout{ font-variant-numeric:tabular-nums; min-width:38px; display:inline-block; }
+
+  /* the position sliders live in the sticky top bar (dark background), not the white module */
+  .aplus-position-bar .aplus-carousel-position{ padding-top:0; color:var(--text-onDark-muted); }
+
+  /* Brand Story desktop: background 1464 x 625, Image Focus tiles 362 x 453 */
+  .brandstory-desktop-wrap{ background:#fff; padding:24px 40px 40px; max-width:1544px; margin:0 auto; }
+  .brandstory-banner{
+    position:relative;
+    width:100%;
+    aspect-ratio:1464/625;
+    background:#e9e9e9;
+    overflow:hidden;
+    border-radius:2px;
+  }
+  .brandstory-banner > img.bg-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .brandstory-bg-btn{
+    position:absolute; top:10px; left:10px; z-index:6;
+    background:rgba(0,0,0,.6); color:#fff; font-size:11px; padding:6px 12px; border-radius:14px; cursor:pointer;
+  }
+  .brandstory-bg-btn:hover{ background:rgba(0,0,0,.8); }
+  .brandstory-arrow{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:32px;height:32px;border-radius:50%; background:rgba(255,255,255,.9);
+    display:flex;align-items:center;justify-content:center; font-size:14px; color:#111;
+    box-shadow:0 1px 4px rgba(0,0,0,.35); z-index:6;
+  }
+  .brandstory-arrow.left{ left:10px; }
+  .brandstory-arrow.right{ right:10px; }
+  /* Measured directly off a live Amazon "From the brand" carousel (getBoundingClientRect
+     against its 1464x625 hero): cards sit at top 23.84% / height 72.48% of the banner
+     (453/625 exactly — the real print-spec tile height), and there's a ~2.05% gap
+     between cards — not edge-to-edge, and not bottom-anchored, as earlier guesses
+     assumed. Card width isn't set directly; it falls out of aspect-ratio(362/453)
+     against the measured height, so it's exact at any render size. The left margin
+     before the first card is NOT a platform constant like the numbers above — it's
+     however much "hero" real estate the designer reserved in their own background
+     art, so it varies design to design. Defaulted to 32% to match the reference
+     design (logo + product shot occupying the left third); adjust to fit your own
+     background art. */
+  .brandstory-tiles{
+    position:absolute; left:0; right:0; top:23.84%; height:72.48%;
+    display:flex; gap:2.05%; overflow:hidden;
+  }
+  .brandstory-tile-card{ flex:0 0 auto; height:100%; aspect-ratio:362/453; }
+  .brandstory-tile-card:first-child{ margin-left:32%; }
+  .brandstory-tile-img{
+    width:100%; height:100%; background:#fff; overflow:hidden;
+    position:relative; cursor:pointer;
+  }
+  .brandstory-tile-img:hover{ outline:2px solid rgba(255,255,255,.7); outline-offset:-2px; }
+  .brandstory-tile-img img{ width:100%;height:100%;object-fit:cover; }
+  .brandstory-tile-img .ph-pattern{ font-size:10px; }
+
+  /* ---------- Mobile chrome ---------- */
+  .phone-frame{
+    width:300px;
+    border:8px solid #050505;
+    border-radius:32px;
+    overflow:hidden;
+    background:#fff;
+    box-shadow:0 0 0 1px rgba(255,255,255,.1), 0 10px 30px rgba(0,0,0,.5);
+  }
+  .phone-notch{
+    height:18px;
+    background:#1c1c1e;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .phone-notch .pill{ width:60px;height:6px;border-radius:4px;background:#3a3a3c; }
+  .m-topbar{
+    background:var(--amz-navy);
+    color:#fff;
+    padding:8px 10px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:11px;
+  }
+  .m-search{ flex:1; background:#fff; border-radius:14px; height:22px; }
+  .m-icon{ width:14px;height:14px;border-radius:3px; background:#4c5a6b; }
+
+  .pdp-mobile .hero{
+    width:100%;
+    aspect-ratio:1/1;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    border-bottom:1px solid var(--border);
+    cursor:pointer;
+  }
+  .pdp-mobile .hero img{ max-width:100%; max-height:100%; object-fit:contain; }
+  .dots-row{ display:flex; gap:6px; justify-content:center; align-items:center; padding:8px 0; }
+  .dots-row .dot{ width:6px;height:6px;border-radius:50%; background:#d5d5d5; cursor:pointer; border:none; padding:0; }
+  .dots-row .dot.on{ background:#555; }
+  .dots-row .dot-add{
+    width:16px;height:16px;border-radius:50%; border:1px dashed #999; background:#fff; color:#888;
+    font-size:11px; line-height:14px; text-align:center; cursor:pointer; padding:0;
+  }
+  .pdp-mobile .info{ padding:10px 12px 16px; }
+  .pdp-mobile .buy-btn{ border-radius:18px; }
+
+  .aplus-mobile-wrap{ background:#eceef0; padding:14px 10px; }
+  .aplus-module-mobile{ width:100%; background:#fff; overflow:hidden; cursor:pointer; }
+  .aplus-module-mobile.empty{ aspect-ratio:600/450; }
+  .aplus-module-mobile img{ width:100%; height:auto; display:block; }
+
+  .brandstory-mobile-wrap{ background:#eceef0; padding:14px 10px; }
+  .brandstory-banner-mobile{
+    position:relative; width:100%; aspect-ratio:463/625; background:#e9e9e9; overflow:hidden; border-radius:2px;
+  }
+  .brandstory-banner-mobile > img.bg-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  /* Same vertical anchor as desktop (top 23.84% / height 72.48%) since the mobile
+     background is the same 625px-tall canvas per spec — only the width differs
+     (362/463 here vs 362/1464 on desktop), so the tile is centered horizontally. */
+  .brandstory-tile-mobile{
+    position:absolute; left:10.9%; right:10.9%; top:23.84%; height:72.48%;
+    display:flex;
+  }
+  .brandstory-tile-mobile .brandstory-tile-img{ width:100%; height:100%; }
+
+  .empty-hint{ padding:8px; text-align:center; }
+
+  footer.tips{
+    max-width:900px;
+    margin:0 auto 60px;
+    padding:16px 24px;
+    font-size:12px;
+    color:var(--text-onDark-muted);
+    line-height:1.7;
+    background:var(--panel-bg);
+    border:1px solid var(--panel-border);
+    border-radius:8px;
+  }
+  footer.tips b{ color:#fff; }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <h1>Amazon 設計預覽工具</h1>
+  <p>上傳你的商品圖、A+ Content 或 Brand Story 設計稿，直接在模擬的 Amazon 頁面中比較電腦版與手機版的實際呈現效果。</p>
+</header>
+
+<div class="controls-bar">
+  <div class="control-group">
+    <span class="group-label">版位</span>
+    <button class="toggle-btn active" data-placement="main">商品主圖／圖庫（最多7張）</button>
+    <button class="toggle-btn" data-placement="aplus">A+ Content 模組</button>
+    <button class="toggle-btn" data-placement="brandstory">Brand Story</button>
+  </div>
+  <div class="control-group">
+    <span class="group-label">裝置</span>
+    <button class="toggle-btn active" data-device="desktop">🖥️ 電腦版</button>
+    <button class="toggle-btn" data-device="mobile">📱 手機版</button>
+  </div>
+  <button class="add-btn" id="addSlotBtn">＋ 新增設計方案</button>
+</div>
+
+<div id="aplusPositionBar" class="aplus-position-bar"></div>
+
+<main id="slotsContainer"></main>
+
+<footer class="tips">
+  <b>使用提示：</b>點擊圖片區塊即可上傳／更換圖片，所有處理都在瀏覽器本機完成，不會上傳到任何伺服器。「商品主圖／圖庫」最多可上傳 7 張，縮圖列可點選切換、hover 縮圖右上角可移除。「A+ Content 模組」為單張圖片，寬度固定電腦版 1464、手機版 600，高度不限，會依上傳圖片的比例自動延伸。圖片裡會有一塊寬度與主圖相同的虛線框標示輪播圖區：第 1 張輪播內容直接畫在主圖裡（不用另外上傳）。框上的左右箭頭可直接切換／新增輪播圖——切到最後一張時按右箭頭會直接跳出上傳視窗新增下一張；下方圓點也可點選跳到指定張、或移除目前這張。切到「A+ Content 模組」後，控制列下方會固定出現一條「輪播圖區塊位置」工具列，列出每個設計方案的上緣／高度拉桿，可直接拖曳調整輪播區塊在主圖中的垂直位置——這條工具列是橫向的，不會佔用預覽畫面的寬度，捲動頁面時也會保持在畫面上方，不用捲到最下面找；拉桿數值以電腦版 1464 x 600、手機版 600 x 450 為基準換算，不會限制你上傳圖片的實際高度。「Brand Story」背景圖製作尺寸電腦版 1464 x 625、手機版 463 x 625，前景圖卡尺寸 362 x 453，最多 3 張，圖卡會依照正確比例顯示、下方不會有文字說明。此頁面可重複使用，之後有新設計都能直接開啟比較。
+</footer>
+
+<script>
+let state = {
+  placement: 'main', // 'main' | 'aplus' | 'brandstory'
+  device: 'desktop',  // 'desktop' | 'mobile'
+  slots: []
+};
+let slotIdCounter = 0;
+
+function findSlot(id){ return state.slots.find(s => s.id === id); }
+
+function addSlot(name){
+  slotIdCounter++;
+  state.slots.push({
+    id: slotIdCounter,
+    name: name || ('設計 ' + String.fromCharCode(64 + state.slots.length + 1)),
+    images: [],
+    activeIndex: 0,
+    aplusImage: null,
+    aplusCarouselImages: [],
+    aplusCarouselIndex: 0,
+    aplusCarouselRect: {
+      desktop: { top: 150, height: 300 },
+      mobile: { top: 110, height: 230 }
+    },
+    brandBg: null,
+    brandTiles: [null, null, null]
+  });
+  render();
+}
+
+function removeSlot(id){
+  state.slots = state.slots.filter(s => s.id !== id);
+  render();
+}
+
+function setSlotName(id, name){
+  const slot = findSlot(id);
+  if(slot) slot.name = name;
+}
+
+/* ---- file picking helper ---- */
+function openFilePicker(multiple, onFiles){
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  if(multiple) input.multiple = true;
+  input.addEventListener('change', e => {
+    const files = Array.from(e.target.files || []);
+    if(!files.length) return;
+    const readers = files.map(f => new Promise(res => {
+      const r = new FileReader();
+      r.onload = ev => res(ev.target.result);
+      r.readAsDataURL(f);
+    }));
+    Promise.all(readers).then(onFiles);
+  });
+  input.click();
+}
+
+/* ---- main gallery (up to 7) ---- */
+function addImagesToSlot(id, dataUrls){
+  const slot = findSlot(id); if(!slot) return;
+  const room = 7 - slot.images.length;
+  if(room <= 0) { render(); return; }
+  slot.images.push(...dataUrls.slice(0, room));
+  render();
+}
+function replaceImageAt(id, index, dataUrl){
+  const slot = findSlot(id); if(!slot) return;
+  slot.images[index] = dataUrl;
+  slot.activeIndex = index;
+  render();
+}
+function removeImageAt(id, index){
+  const slot = findSlot(id); if(!slot) return;
+  slot.images.splice(index, 1);
+  if(slot.activeIndex >= slot.images.length) slot.activeIndex = Math.max(0, slot.images.length - 1);
+  render();
+}
+function setActiveIndex(id, index){
+  const slot = findSlot(id); if(!slot) return;
+  slot.activeIndex = index;
+  render();
+}
+
+/* ---- A+ Content (single) ---- */
+function setAplusImage(id, dataUrl){
+  const slot = findSlot(id); if(!slot) return;
+  slot.aplusImage = dataUrl;
+  render();
+}
+
+/* ---- A+ Content carousel region (slide 0 = baked into the main image, others are uploaded separately) ---- */
+const APLUS_CAROUSEL_MAX_EXTRA = 5;
+
+function addAplusCarouselImages(id, dataUrls){
+  const slot = findSlot(id); if(!slot) return;
+  const room = APLUS_CAROUSEL_MAX_EXTRA - slot.aplusCarouselImages.length;
+  if(room <= 0){ render(); return; }
+  slot.aplusCarouselImages.push(...dataUrls.slice(0, room));
+  slot.aplusCarouselIndex = slot.aplusCarouselImages.length;
+  render();
+}
+function replaceAplusCarouselImage(id, index, dataUrl){
+  const slot = findSlot(id); if(!slot) return;
+  slot.aplusCarouselImages[index - 1] = dataUrl;
+  render();
+}
+function removeAplusCarouselImage(id, index){
+  const slot = findSlot(id); if(!slot || index === 0) return;
+  slot.aplusCarouselImages.splice(index - 1, 1);
+  const total = 1 + slot.aplusCarouselImages.length;
+  if(slot.aplusCarouselIndex >= total) slot.aplusCarouselIndex = total - 1;
+  render();
+}
+function setAplusCarouselIndex(id, index){
+  const slot = findSlot(id); if(!slot) return;
+  slot.aplusCarouselIndex = index;
+  render();
+}
+function stepAplusCarousel(id, dir){
+  const slot = findSlot(id); if(!slot) return;
+  const total = 1 + slot.aplusCarouselImages.length;
+  slot.aplusCarouselIndex = (slot.aplusCarouselIndex + dir + total) % total;
+  render();
+}
+function nextAplusCarousel(id){
+  const slot = findSlot(id); if(!slot) return;
+  const total = 1 + slot.aplusCarouselImages.length;
+  const atEnd = slot.aplusCarouselIndex === total - 1;
+  if(atEnd && slot.aplusCarouselImages.length < APLUS_CAROUSEL_MAX_EXTRA){
+    openFilePicker(false, urls => addAplusCarouselImages(id, urls));
+  } else {
+    stepAplusCarousel(id, 1);
+  }
+}
+
+/* ---- Brand Story ---- */
+function setBrandBg(id, dataUrl){
+  const slot = findSlot(id); if(!slot) return;
+  slot.brandBg = dataUrl;
+  render();
+}
+function setBrandTile(id, index, dataUrl){
+  const slot = findSlot(id); if(!slot) return;
+  slot.brandTiles[index] = dataUrl;
+  render();
+}
+
+/* ---- renderers ---- */
+function renderMainDesktop(slot){
+  const imgs = slot.images;
+  const active = imgs[slot.activeIndex] || null;
+  let thumbsHtml = '';
+  imgs.forEach((src, i) => {
+    thumbsHtml += `
+      <div class="thumb ${i === slot.activeIndex ? 'active' : ''}" data-action="set-active" data-slot-id="${slot.id}" data-index="${i}">
+        <img src="${src}" alt="">
+        <span class="thumb-remove" data-action="remove-image" data-slot-id="${slot.id}" data-index="${i}">✕</span>
+      </div>`;
+  });
+  if(imgs.length < 7){
+    thumbsHtml += `<div class="thumb-add" data-action="add-images" data-slot-id="${slot.id}">＋</div>`;
+  }
+  const heroInner = active
+    ? `<img src="${active}" alt="${slot.name}">`
+    : `<div class="ph-pattern" style="width:100%;height:100%;">點擊上傳商品圖<br>最多 7 張</div>`;
+  const heroAction = active ? 'replace-hero' : 'add-images';
+
+  return `
+  <div class="browser-frame">
+    <div class="amz-nav">
+      <div class="amz-logo">amazon<span class="dot">.</span></div>
+      <div class="amz-search">
+        <div class="amz-search-cat"></div>
+        <div class="amz-search-input"></div>
+        <div class="amz-search-btn"></div>
+      </div>
+      <div style="width:40px;height:14px;background:#3a4553;border-radius:2px;"></div>
+      <div style="width:24px;height:18px;background:var(--amz-orange);border-radius:2px;"></div>
+    </div>
+    <div class="amz-nav-sub">
+      <span>All</span><span>Today's Deals</span><span>Customer Service</span><span>Registry</span>
+    </div>
+    <div class="amz-breadcrumb">Home › Category › Sub-category › Product</div>
+    <div class="pdp-desktop">
+      <div class="gallery">
+        <div class="thumbs">${thumbsHtml}</div>
+        <div class="hero" data-action="${heroAction}" data-slot-id="${slot.id}">${heroInner}</div>
+      </div>
+      <div class="info">
+        <div class="bar title1"></div>
+        <div class="bar title2"></div>
+        <div class="stars">★★★★☆ 1,204 ratings</div>
+        <div class="bar small"></div>
+        <div class="price-row">$29<span class="cents">99</span></div>
+        <div class="bar small"></div>
+        <div class="bar small" style="width:55%"></div>
+        <div class="buybox">
+          <div class="bar small" style="width:60%"></div>
+          <div class="buy-btn">Add to Cart</div>
+          <div class="buy-btn secondary">Buy Now</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderMainMobile(slot){
+  const imgs = slot.images;
+  const active = imgs[slot.activeIndex] || null;
+  const heroInner = active
+    ? `<img src="${active}" alt="${slot.name}">`
+    : `<div class="ph-pattern" style="width:100%;height:100%;">點擊上傳商品圖<br>最多 7 張</div>`;
+  const heroAction = active ? 'replace-hero' : 'add-images';
+
+  let dotsHtml = '';
+  imgs.forEach((src, i) => {
+    dotsHtml += `<button class="dot ${i === slot.activeIndex ? 'on' : ''}" data-action="set-active" data-slot-id="${slot.id}" data-index="${i}"></button>`;
+  });
+  if(imgs.length < 7){
+    dotsHtml += `<button class="dot-add" data-action="add-images" data-slot-id="${slot.id}">＋</button>`;
+  }
+
+  return `
+  <div class="phone-frame">
+    <div class="phone-notch"><div class="pill"></div></div>
+    <div class="m-topbar">
+      <div class="m-icon"></div>
+      <div class="m-search"></div>
+      <div class="m-icon"></div>
+      <div class="m-icon"></div>
+    </div>
+    <div class="pdp-mobile">
+      <div class="hero" data-action="${heroAction}" data-slot-id="${slot.id}">${heroInner}</div>
+      <div class="dots-row">${dotsHtml}</div>
+      <div class="info">
+        <div class="bar title1"></div>
+        <div class="bar title2"></div>
+        <div class="stars">★★★★☆ 1,204</div>
+        <div class="price-row" style="font-size:18px;">$29<span class="cents">99</span></div>
+        <div class="buy-btn" style="margin-top:10px;">Add to Cart</div>
+        <div class="buy-btn secondary">Buy Now</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+const APLUS_REF_HEIGHT = { desktop: 600, mobile: 450 };
+const APLUS_REF_LABEL = { desktop: '1464 x 600', mobile: '600 x 450' };
+
+function aplusCarouselBoxHtml(slot, device){
+  const total = 1 + slot.aplusCarouselImages.length;
+  const idx = slot.aplusCarouselIndex;
+  const rect = slot.aplusCarouselRect[device];
+  const refH = APLUS_REF_HEIGHT[device];
+  const topPct = (rect.top / refH * 100).toFixed(2);
+  const heightPct = (rect.height / refH * 100).toFixed(2);
+  let inner, boxClass = '', boxAction = '';
+  if(idx === 0){
+    inner = `<div class="aplus-carousel-badge">輪播圖區・第1張</div>`;
+  } else {
+    inner = `<img src="${slot.aplusCarouselImages[idx - 1]}" alt="">`;
+    boxClass = 'has-image';
+    boxAction = `data-action="replace-aplus-carousel" data-slot-id="${slot.id}" data-index="${idx}"`;
+  }
+  const arrowsHtml = `
+    <div class="aplus-carousel-arrow left" data-action="aplus-carousel-prev" data-slot-id="${slot.id}">‹</div>
+    <div class="aplus-carousel-arrow right" data-action="aplus-carousel-next" data-slot-id="${slot.id}">›</div>`;
+  return `
+    <div class="aplus-carousel-wrap" id="aplus-carousel-wrap-${slot.id}" style="top:${topPct}%;height:${heightPct}%;">
+      <div class="aplus-carousel-box ${boxClass}" ${boxAction}>${inner}</div>
+      ${arrowsHtml}
+    </div>`;
+}
+
+function aplusCarouselControlsHtml(slot){
+  const total = 1 + slot.aplusCarouselImages.length;
+  let dots = '';
+  for(let i = 0; i < total; i++){
+    dots += `<button class="dot ${i === slot.aplusCarouselIndex ? 'on' : ''}" data-action="set-aplus-carousel-index" data-slot-id="${slot.id}" data-index="${i}"></button>`;
+  }
+  if(slot.aplusCarouselImages.length < APLUS_CAROUSEL_MAX_EXTRA){
+    dots += `<button class="dot-add" data-action="add-aplus-carousel-image" data-slot-id="${slot.id}">＋</button>`;
+  }
+  const removeBtn = slot.aplusCarouselIndex > 0
+    ? `<button class="carousel-remove-btn" data-action="remove-aplus-carousel-image" data-slot-id="${slot.id}" data-index="${slot.aplusCarouselIndex}">移除此張</button>`
+    : '';
+  return `
+    <div class="aplus-carousel-controls">
+      <span class="hint">輪播圖（共 ${total} 張・第1張與主圖一起製作，其餘可個別上傳）</span>
+      ${dots}
+      ${removeBtn}
+    </div>`;
+}
+
+function aplusCarouselPositionControlsHtml(slot, device){
+  const rect = slot.aplusCarouselRect[device];
+  const refH = APLUS_REF_HEIGHT[device];
+  return `
+    <div class="aplus-carousel-position">
+      <label class="pos-field">上緣
+        <input type="range" class="carousel-rect-range" min="0" max="${refH}" value="${rect.top}"
+          data-slot-id="${slot.id}" data-device="${device}" data-field="top">
+        <span class="pos-readout" data-slot-id="${slot.id}" data-device="${device}" data-field="top">${rect.top}px</span>
+      </label>
+      <label class="pos-field">高度
+        <input type="range" class="carousel-rect-range" min="10" max="${refH}" value="${rect.height}"
+          data-slot-id="${slot.id}" data-device="${device}" data-field="height">
+        <span class="pos-readout" data-slot-id="${slot.id}" data-device="${device}" data-field="height">${rect.height}px</span>
+      </label>
+    </div>`;
+}
+
+function renderAplusDesktop(slot){
+  const hasMain = !!slot.aplusImage;
+  const inner = hasMain
+    ? `<img src="${slot.aplusImage}" alt="${slot.name}">`
+    : `<div class="ph-pattern" style="position:absolute;inset:0;">點擊上傳 A+ Content 圖片<br>寬度 1464</div>`;
+  const emptyClass = hasMain ? '' : ' empty';
+  const carouselOverlay = hasMain ? aplusCarouselBoxHtml(slot, 'desktop') : '';
+  const carouselControls = hasMain ? aplusCarouselControlsHtml(slot) : '';
+  return `
+  <div class="browser-frame">
+    <div class="amz-nav">
+      <div class="amz-logo">amazon<span class="dot">.</span></div>
+      <div class="amz-search">
+        <div class="amz-search-cat"></div><div class="amz-search-input"></div><div class="amz-search-btn"></div>
+      </div>
+    </div>
+    <div class="aplus-desktop-wrap">
+      <div class="aplus-section-title">From the manufacturer</div>
+      <div class="aplus-module${emptyClass}" data-action="upload-aplus" data-slot-id="${slot.id}">${inner}${carouselOverlay}</div>
+      ${carouselControls}
+      <div class="aplus-caption">A+ Content・寬度固定 1464，高度不限（依圖片比例自動延伸）</div>
+    </div>
+  </div>`;
+}
+
+function renderAplusMobile(slot){
+  const hasMain = !!slot.aplusImage;
+  const inner = hasMain
+    ? `<img src="${slot.aplusImage}" alt="${slot.name}">`
+    : `<div class="ph-pattern" style="position:absolute;inset:0;">點擊上傳<br>寬度 600</div>`;
+  const emptyClass = hasMain ? '' : ' empty';
+  const carouselOverlay = hasMain ? aplusCarouselBoxHtml(slot, 'mobile') : '';
+  const carouselControls = hasMain ? aplusCarouselControlsHtml(slot) : '';
+  return `
+  <div class="phone-frame">
+    <div class="phone-notch"><div class="pill"></div></div>
+    <div class="m-topbar">
+      <div class="m-icon"></div><div class="m-search"></div><div class="m-icon"></div><div class="m-icon"></div>
+    </div>
+    <div class="aplus-mobile-wrap">
+      <div class="aplus-section-title" style="font-size:14px;margin-bottom:8px;">From the manufacturer</div>
+      <div class="aplus-module-mobile${emptyClass}" style="position:relative;" data-action="upload-aplus" data-slot-id="${slot.id}">${inner}${carouselOverlay}</div>
+      ${carouselControls}
+      <div class="aplus-caption">A+ Content・寬度固定 600，高度不限（依圖片比例自動延伸）</div>
+    </div>
+  </div>`;
+}
+
+function brandTileHtml(slot, index){
+  const src = slot.brandTiles[index];
+  const inner = src
+    ? `<img src="${src}" alt="">`
+    : `<div class="ph-pattern" style="position:absolute;inset:0;">點擊上傳<br>362 x 453</div>`;
+  return `
+    <div class="brandstory-tile-card">
+      <div class="brandstory-tile-img" data-action="upload-brand-tile" data-slot-id="${slot.id}" data-index="${index}">${inner}</div>
+    </div>`;
+}
+
+function renderBrandDesktop(slot){
+  const bgInner = slot.brandBg
+    ? `<img class="bg-img" src="${slot.brandBg}" alt="${slot.name}">`
+    : `<div class="ph-pattern" style="position:absolute;inset:0;">點擊上傳 Brand Story 背景圖<br>製作尺寸 1464 x 625</div>`;
+  const tile0 = brandTileHtml(slot, 0);
+  const tile1 = brandTileHtml(slot, 1);
+  const tile2 = brandTileHtml(slot, 2);
+  return `
+  <div class="browser-frame">
+    <div class="amz-nav">
+      <div class="amz-logo">amazon<span class="dot">.</span></div>
+      <div class="amz-search">
+        <div class="amz-search-cat"></div><div class="amz-search-input"></div><div class="amz-search-btn"></div>
+      </div>
+    </div>
+    <div class="brandstory-desktop-wrap">
+      <div class="aplus-section-title">From the brand</div>
+      <div class="brandstory-banner" data-action="${slot.brandBg ? '' : 'upload-brand-bg'}" data-slot-id="${slot.id}">
+        ${bgInner}
+        ${slot.brandBg ? `<div class="brandstory-bg-btn" data-action="upload-brand-bg" data-slot-id="${slot.id}">更換背景圖</div>` : ''}
+        <div class="brandstory-arrow left">‹</div>
+        <div class="brandstory-arrow right">›</div>
+        <div class="brandstory-tiles">
+          ${tile0}
+          ${tile1}
+          ${tile2}
+        </div>
+      </div>
+      <div class="aplus-caption">Brand Story・背景 1464 x 625・前景圖卡 362 x 453（最多 3 張）</div>
+    </div>
+  </div>`;
+}
+
+function renderBrandMobile(slot){
+  const bgInner = slot.brandBg
+    ? `<img class="bg-img" src="${slot.brandBg}" alt="${slot.name}">`
+    : `<div class="ph-pattern" style="position:absolute;inset:0;">點擊上傳背景圖<br>463 x 625</div>`;
+  const tileSrc = slot.brandTiles[0];
+  const tileInner = tileSrc
+    ? `<img src="${tileSrc}" alt="">`
+    : `<div class="ph-pattern" style="position:absolute;inset:0;">點擊上傳<br>362 x 453</div>`;
+  return `
+  <div class="phone-frame">
+    <div class="phone-notch"><div class="pill"></div></div>
+    <div class="m-topbar">
+      <div class="m-icon"></div><div class="m-search"></div><div class="m-icon"></div><div class="m-icon"></div>
+    </div>
+    <div class="brandstory-mobile-wrap">
+      <div class="aplus-section-title" style="font-size:14px;margin-bottom:8px;">From the brand</div>
+      <div class="brandstory-banner-mobile" data-action="${slot.brandBg ? '' : 'upload-brand-bg'}" data-slot-id="${slot.id}">
+        ${bgInner}
+        ${slot.brandBg ? `<div class="brandstory-bg-btn" data-action="upload-brand-bg" data-slot-id="${slot.id}">更換背景圖</div>` : ''}
+        <div class="brandstory-tile-mobile">
+          <div class="brandstory-tile-img" data-action="upload-brand-tile" data-slot-id="${slot.id}" data-index="0">${tileInner}</div>
+        </div>
+      </div>
+      <div class="dots-row"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div>
+      <div class="aplus-caption">Brand Story・背景 463 x 625</div>
+    </div>
+  </div>`;
+}
+
+function renderSlotMock(slot){
+  if(state.placement === 'main'){
+    return state.device === 'desktop' ? renderMainDesktop(slot) : renderMainMobile(slot);
+  } else if(state.placement === 'aplus'){
+    return state.device === 'desktop' ? renderAplusDesktop(slot) : renderAplusMobile(slot);
+  } else {
+    return state.device === 'desktop' ? renderBrandDesktop(slot) : renderBrandMobile(slot);
+  }
+}
+
+function renderAplusPositionBar(){
+  const bar = document.getElementById('aplusPositionBar');
+  if(!bar) return;
+  const relevantSlots = state.slots.filter(s => s.aplusImage);
+  const show = state.placement === 'aplus' && relevantSlots.length > 0;
+  bar.classList.toggle('visible', show);
+  if(!show){ bar.innerHTML = ''; return; }
+  const device = state.device;
+  bar.innerHTML = `
+    <span class="bar-slot-name" style="opacity:.7;">輪播圖區塊位置（${device === 'desktop' ? '電腦版' : '手機版'}・基準 ${APLUS_REF_LABEL[device]}）</span>
+    ${relevantSlots.map(slot => `
+      <div class="bar-slot-block">
+        <span class="bar-slot-name">${slot.name}</span>
+        ${aplusCarouselPositionControlsHtml(slot, device)}
+      </div>
+    `).join('')}
+  `;
+}
+
+function render(){
+  const container = document.getElementById('slotsContainer');
+  container.classList.toggle('layout-desktop', state.device === 'desktop');
+  container.classList.toggle('layout-mobile', state.device === 'mobile');
+  container.innerHTML = state.slots.map(slot => `
+    <div class="design-slot" data-id="${slot.id}">
+      <div class="slot-toolbar">
+        <input class="slot-name" value="${slot.name}" data-id="${slot.id}">
+        <span class="hint">點擊圖片區塊即可上傳／更換</span>
+        <button class="remove-btn" data-action="remove-slot" data-slot-id="${slot.id}" title="移除此方案">✕</button>
+      </div>
+      <div class="mock-frame-wrap">
+        ${renderSlotMock(slot)}
+      </div>
+    </div>
+  `).join('');
+  renderAplusPositionBar();
+}
+
+/* ---- delegated events (bound once) ---- */
+const slotsContainer = document.getElementById('slotsContainer');
+const aplusPositionBar = document.getElementById('aplusPositionBar');
+
+function handleCarouselRectInput(target){
+  if(!target.classList.contains('carousel-rect-range')) return;
+  const slotId = Number(target.dataset.slotId);
+  const device = target.dataset.device;
+  const field = target.dataset.field;
+  const val = Number(target.value);
+  const slot = findSlot(slotId);
+  if(!slot) return;
+  slot.aplusCarouselRect[device][field] = val;
+  const refH = APLUS_REF_HEIGHT[device];
+  const wrap = document.getElementById(`aplus-carousel-wrap-${slotId}`);
+  if(wrap){
+    wrap.style.top = (slot.aplusCarouselRect[device].top / refH * 100) + '%';
+    wrap.style.height = (slot.aplusCarouselRect[device].height / refH * 100) + '%';
+  }
+  const readout = document.querySelector(
+    `.pos-readout[data-slot-id="${slotId}"][data-device="${device}"][data-field="${field}"]`
+  );
+  if(readout) readout.textContent = val + 'px';
+}
+
+slotsContainer.addEventListener('input', e => {
+  if(e.target.classList.contains('slot-name')){
+    setSlotName(Number(e.target.dataset.id), e.target.value);
+    return;
+  }
+  handleCarouselRectInput(e.target);
+});
+
+aplusPositionBar.addEventListener('input', e => handleCarouselRectInput(e.target));
+
+slotsContainer.addEventListener('click', e => {
+  const t = e.target.closest('[data-action]');
+  if(!t || !t.dataset.action) return;
+  const action = t.dataset.action;
+  const slotId = Number(t.dataset.slotId);
+
+  if(action === 'remove-slot'){ removeSlot(slotId); return; }
+  if(action === 'set-active'){ setActiveIndex(slotId, Number(t.dataset.index)); return; }
+  if(action === 'remove-image'){ e.stopPropagation(); removeImageAt(slotId, Number(t.dataset.index)); return; }
+  if(action === 'add-images'){ openFilePicker(true, urls => addImagesToSlot(slotId, urls)); return; }
+  if(action === 'replace-hero'){
+    const slot = findSlot(slotId);
+    openFilePicker(false, urls => replaceImageAt(slotId, slot ? slot.activeIndex : 0, urls[0]));
+    return;
+  }
+  if(action === 'upload-aplus'){ openFilePicker(false, urls => setAplusImage(slotId, urls[0])); return; }
+  if(action === 'aplus-carousel-prev'){ e.stopPropagation(); stepAplusCarousel(slotId, -1); return; }
+  if(action === 'aplus-carousel-next'){ e.stopPropagation(); nextAplusCarousel(slotId); return; }
+  if(action === 'set-aplus-carousel-index'){ e.stopPropagation(); setAplusCarouselIndex(slotId, Number(t.dataset.index)); return; }
+  if(action === 'add-aplus-carousel-image'){ e.stopPropagation(); openFilePicker(true, urls => addAplusCarouselImages(slotId, urls)); return; }
+  if(action === 'remove-aplus-carousel-image'){ e.stopPropagation(); removeAplusCarouselImage(slotId, Number(t.dataset.index)); return; }
+  if(action === 'replace-aplus-carousel'){ e.stopPropagation(); openFilePicker(false, urls => replaceAplusCarouselImage(slotId, Number(t.dataset.index), urls[0])); return; }
+  if(action === 'upload-brand-bg'){ openFilePicker(false, urls => setBrandBg(slotId, urls[0])); return; }
+  if(action === 'upload-brand-tile'){ openFilePicker(false, urls => setBrandTile(slotId, Number(t.dataset.index), urls[0])); return; }
+});
+
+document.querySelectorAll('[data-placement]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('[data-placement]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    state.placement = btn.dataset.placement;
+    render();
+  });
+});
+document.querySelectorAll('[data-device]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('[data-device]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    state.device = btn.dataset.device;
+    render();
+  });
+});
+document.getElementById('addSlotBtn').addEventListener('click', ()=> addSlot());
+
+// init with two comparison slots
+addSlot('設計 A');
+addSlot('設計 B');
+</script>
+
+</body>
+</html>
