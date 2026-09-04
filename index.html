@@ -101,6 +101,46 @@
   }
   .add-btn:hover{ background:#3a3a3d; }
 
+  /* Brand Store builder */
+  .brand-store-builder{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:680px;background:#eef1f4;color:#18212d;}
+  .bs-library{background:#172235;color:#fff;padding:18px;align-self:stretch;}
+  .bs-library h3{font-size:16px;margin:0 0 4px;}.bs-library-note{font-size:11px;color:#aeb8c8;margin:0 0 14px;}
+  .bs-library-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .bs-library-item{border:1px solid #43536c;background:#25344d;color:#fff;border-radius:7px;padding:9px 7px;cursor:grab;text-align:left;min-height:68px;}
+  .bs-library-item:hover{border-color:var(--amz-orange);}.bs-library-item[disabled]{opacity:.38;cursor:not-allowed;}
+  .bs-library-item b{display:block;font-size:11px;margin-bottom:4px;}.bs-library-item span{display:block;font-size:9px;color:#b7c1ce;line-height:1.35;}
+  .bs-canvas-area{padding:20px;overflow:auto;}.bs-canvas-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px;}
+  .bs-canvas-head h3{margin:0;font-size:16px;}.bs-canvas-head span{font-size:11px;color:#667286;}
+  .bs-store{max-width:1000px;margin:0 auto;background:#fff;box-shadow:0 5px 24px rgba(20,35,55,.16);padding:10px;}
+  .bs-header{position:relative;aspect-ratio:5/1;background:#e0e6ed;overflow:hidden;border:1px solid #ccd4dd;cursor:pointer;}
+  .bs-header img,.bs-tile-image img{width:100%;height:100%;object-fit:cover;display:block;}
+  .bs-safe-zone{position:absolute;left:15%;right:15%;top:0;bottom:0;border-left:1px dashed rgba(255,153,0,.9);border-right:1px dashed rgba(255,153,0,.9);pointer-events:none;}
+  .bs-logo{position:absolute;left:18px;bottom:10px;width:64px;height:64px;border:3px solid #fff;background:#f8fafc;display:grid;place-items:center;font-size:9px;color:#738095;overflow:hidden;z-index:2;}
+  .bs-logo img{width:100%;height:100%;object-fit:cover;}.bs-nav{height:35px;background:#f5f6f7;border-bottom:1px solid #ddd;display:flex;align-items:center;padding-left:95px;font-size:11px;color:#53606f;}
+  .bs-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:105px;gap:8px;padding-top:8px;min-height:150px;}
+  .bs-empty{grid-column:1/-1;border:2px dashed #f3a847;background:#fff8ea;min-height:130px;display:grid;place-items:center;text-align:center;color:#9a5b00;font-size:12px;}
+  .bs-section{position:relative;border:1px solid #ccd4dd;background:#e8edf2;overflow:hidden;min-width:0;}
+  .bs-section.type-full{grid-column:span 4;grid-row:span 2}.bs-section.type-large{grid-column:span 2;grid-row:span 2}.bs-section.type-medium{grid-column:span 2;grid-row:span 1}.bs-section.type-small{grid-column:span 1;grid-row:span 1}
+  .bs-section.type-function{grid-column:span 4;grid-row:span 2;}
+  .bs-tile-image{position:absolute;inset:0;display:grid;place-items:center;cursor:pointer;}.bs-placeholder{padding:18px;text-align:center;color:#6d7885;font-size:12px;line-height:1.6;}
+  .bs-section-tools{position:absolute;right:5px;top:5px;display:flex;gap:4px;z-index:4;}.bs-section-tools button{border:0;background:rgba(19,25,33,.78);color:#fff;border-radius:4px;padding:3px 6px;font-size:10px;cursor:pointer;}
+  .bs-size-badge,.bs-warning{position:absolute;left:6px;bottom:6px;z-index:3;border-radius:4px;padding:3px 6px;font-size:9px;background:rgba(255,255,255,.92);color:#44515f;}.bs-warning{background:#fff2cc;color:#8a5400;right:6px;}
+  .bs-drop-tail{grid-column:1/-1;border:2px dashed #f3a847;min-height:52px;display:grid;place-items:center;color:#9a5b00;font-size:11px;}
+  .bs-mobile-store{max-width:360px;margin:0 auto;background:#fff;box-shadow:0 5px 24px rgba(20,35,55,.16);padding:7px;}.bs-mobile-store .bs-header{aspect-ratio:5/1}.bs-mobile-flow{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding-top:6px}.bs-mobile-flow .bs-section{min-height:120px;grid-column:1/-1}.bs-mobile-flow .type-small{grid-column:span 1;min-height:110px}
+  .bs-store{container-type:inline-size;}
+  .bs-grid{display:block;}
+  .bs-tile-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:calc((100cqw - 24px)/4);gap:8px;margin-bottom:8px;}
+  .bs-full-band{margin-bottom:8px;}
+  .bs-full-band>.bs-section{width:100%;aspect-ratio:var(--bs-ratio,2);min-height:0;}
+  .bs-grid>.bs-empty{margin-bottom:8px;}
+  .bs-section.bs-drop-before{outline:4px solid #ff9900;outline-offset:-4px;}
+  .bs-section.bs-drop-before:after{content:'放在此區塊之前';position:absolute;left:0;top:0;background:#ff9900;color:#131921;padding:5px;font-size:11px;z-index:5;pointer-events:none;}
+  .bs-drop-tail.bs-drop-before{background:#ffe0ab;border-style:solid;}
+  .bs-mobile-flow .bs-section:not(.type-function){aspect-ratio:var(--bs-ratio,1);min-height:0;}
+  .bs-mobile-flow .bs-section.type-full{aspect-ratio:var(--bs-ratio,2);}
+  .remove-btn:disabled{opacity:.25;cursor:not-allowed!important;}
+  @media(max-width:780px){.brand-store-builder{grid-template-columns:1fr}.bs-library-grid{grid-template-columns:repeat(4,1fr)}.bs-library{padding:12px}.bs-canvas-area{padding:12px}}
+
   /* A+ Content: carousel position controls live in a full-width sticky bar ABOVE the
      preview (not a sidebar) so it never eats into the preview's width — the whole point
      is that the preview stays the same width a real Amazon page would use. */
@@ -514,7 +554,7 @@
 
 <header class="app-header">
   <h1>Amazon 設計預覽工具</h1>
-  <p>上傳你的商品圖、A+ Content 或 Brand Story 設計稿，直接在模擬的 Amazon 頁面中比較電腦版與手機版的實際呈現效果。</p>
+  <p>上傳商品圖、A+ Content、Brand Story，或拖拉編排 Brand Store，直接比較電腦版與手機版呈現效果。</p>
 </header>
 
 <div class="controls-bar">
@@ -523,6 +563,7 @@
     <button class="toggle-btn active" data-placement="main">商品主圖／圖庫（最多7張）</button>
     <button class="toggle-btn" data-placement="aplus">A+ Content 模組</button>
     <button class="toggle-btn" data-placement="brandstory">Brand Story</button>
+    <button class="toggle-btn" data-placement="brandstore">Brand Store</button>
   </div>
   <div class="control-group">
     <span class="group-label">裝置</span>
@@ -537,12 +578,61 @@
 <main id="slotsContainer"></main>
 
 <footer class="tips">
-  <b>使用提示：</b>點擊圖片區塊即可上傳／更換圖片，所有處理都在瀏覽器本機完成，不會上傳到任何伺服器。「商品主圖／圖庫」最多可上傳 7 張，縮圖列可點選切換、hover 縮圖右上角可移除。「A+ Content 模組」為單張圖片，寬度固定電腦版 1464、手機版 600，高度不限，會依上傳圖片的比例自動延伸。圖片裡會有一塊寬度與主圖相同的虛線框標示輪播圖區：第 1 張輪播內容直接畫在主圖裡（不用另外上傳）。框上的左右箭頭可直接切換／新增輪播圖——切到最後一張時按右箭頭會直接跳出上傳視窗新增下一張；下方圓點也可點選跳到指定張、或移除目前這張。切到「A+ Content 模組」後，控制列下方會固定出現一條「輪播圖區塊位置」工具列，列出每個設計方案的上緣／高度拉桿，可直接拖曳調整輪播區塊在主圖中的垂直位置——這條工具列是橫向的，不會佔用預覽畫面的寬度，捲動頁面時也會保持在畫面上方，不用捲到最下面找；拉桿數值以電腦版 1464 x 600、手機版 600 x 450 為基準換算，不會限制你上傳圖片的實際高度。「Brand Story」背景圖製作尺寸電腦版 1464 x 625、手機版 463 x 625，前景圖卡尺寸 362 x 453，最多 3 張，圖卡會依照正確比例顯示、下方不會有文字說明。此頁面可重複使用，之後有新設計都能直接開啟比較。
+  <b>使用提示：</b>所有圖片只在瀏覽器本機處理，不會上傳到伺服器。初始只有一組設計，需要比較時可按「新增設計方案」。「商品主圖／圖庫」最多 7 張；「A+ Content」桌機寬 1464、手機寬 600，高度不限；「Brand Story」背景為桌機 1464 × 625、手機 463 × 625，前景圖卡 362 × 453。「Brand Store」可從左側拖曳或點擊加入 Full width、Large、Medium、Small 與 Amazon 功能佔位模組；桌機與手機預設共用圖片，手機預覽可為個別模組選用自訂圖片。重新整理頁面會清空本次預覽內容。
 </footer>
+
+<script id="brand-store-logic">
+const BRAND_STORE_TILE_TYPES = Object.freeze({
+  header:{label:'Header',minDesktop:[3000,600],grid:[4,1]},
+  logo:{label:'Logo',minDesktop:[400,400],grid:[1,1]},
+  full:{label:'Full width',minDesktop:[1500,20],recommendedWidth:3000,grid:[4,2]},
+  large:{label:'Large',minDesktop:[1500,1500],grid:[2,2]},
+  medium:{label:'Medium',minDesktop:[1500,750],grid:[2,1]},
+  small:{label:'Small',minDesktop:[750,750],grid:[1,1]},
+  text:{label:'文字',grid:[4,1],functional:true}, video:{label:'影片',grid:[4,2],functional:true},
+  product:{label:'單一商品',grid:[2,2],functional:true}, productGrid:{label:'商品列表',grid:[4,2],functional:true},
+  gallery:{label:'圖片 Gallery',grid:[4,2],functional:true}, backgroundVideo:{label:'背景影片',grid:[4,2],functional:true},
+  featuredDeals:{label:'優惠商品',grid:[4,2],functional:true}, recommendedProducts:{label:'推薦商品',grid:[4,2],functional:true}
+});
+const BRAND_STORE_LIMITS = Object.freeze({sections:20,backgroundVideo:4,productGrid:1,gallery:1,featuredDeals:1,recommendedProducts:1});
+function createBrandStoreState(){return {hero:null,logo:null,sections:[]};}
+function validateBrandStoreAsset(type,meta){
+  const warnings=[];
+  if(!meta || !/^image\/(png|jpeg|webp|gif)$/.test(meta.mime||'')) return {accepted:false,warnings:[{code:'unsupported-file',message:'不支援的圖片格式'}]};
+  const rule=BRAND_STORE_TILE_TYPES[type];
+  if(rule&&rule.minDesktop&&(meta.width<rule.minDesktop[0]||meta.height<rule.minDesktop[1])) warnings.push({code:'below-minimum',message:`低於建議尺寸 ${rule.minDesktop.join(' × ')} px`});
+  if(meta.size>5*1024*1024) warnings.push({code:'over-file-limit',message:'超過 Amazon 5 MB 上限'});
+  return {accepted:true,warnings};
+}
+function canAddBrandStoreSection(sections,type){
+  if(sections.length>=BRAND_STORE_LIMITS.sections) return {ok:false,reason:'每頁最多 20 個區塊'};
+  const limit=BRAND_STORE_LIMITS[type];
+  if(limit&&sections.filter(s=>s.type===type).length>=limit) return {ok:false,reason:`此模組最多 ${limit} 個`};
+  return {ok:true,reason:''};
+}
+function packBrandStoreGrid(sections){
+  const occupied=[]; let maxBottom=0;
+  const free=(r,c,w,h)=>{for(let y=r;y<r+h;y++)for(let x=c;x<c+w;x++)if(occupied[y]?.[x])return false;return true;};
+  const mark=(r,c,w,h)=>{for(let y=r;y<r+h;y++){occupied[y]??=[];for(let x=c;x<c+w;x++)occupied[y][x]=true;}maxBottom=Math.max(maxBottom,r+h);};
+  return sections.map((section,index)=>{
+    const rule=BRAND_STORE_TILE_TYPES[section.type]||{grid:[4,2]}; const [w,h]=rule.grid;
+    let row=0,column=0;
+    if(w===4){row=maxBottom;column=0;}else outer:for(row=0;;row++){for(column=0;column<=4-w;column++)if(free(row,column,w,h))break outer;}
+    mark(row,column,w,h); return {...section,row,column,index};
+  });
+}
+function getMobileSectionOrder(sections){return packBrandStoreGrid(sections).sort((a,b)=>a.row-b.row||a.column-b.column||a.index-b.index);}
+function getBrandStoreAssetForDevice(section,device){return device==='mobile'?(section.mobileAsset||section.desktopAsset):section.desktopAsset;}
+function getBrandStoreDisplayRatio(type,asset){
+  if(type==='full'&&asset?.width>0&&asset?.height>0)return asset.width/asset.height;
+  return type==='medium'||type==='full'?2:1;
+}
+window.__amazonPreviewTestApi=Object.freeze({BRAND_STORE_TILE_TYPES,BRAND_STORE_LIMITS,createBrandStoreState,validateBrandStoreAsset,canAddBrandStoreSection,packBrandStoreGrid,getMobileSectionOrder,getBrandStoreAssetForDevice,getBrandStoreDisplayRatio});
+</script>
 
 <script>
 let state = {
-  placement: 'main', // 'main' | 'aplus' | 'brandstory'
+  placement: 'main', // 'main' | 'aplus' | 'brandstory' | 'brandstore'
   device: 'desktop',  // 'desktop' | 'mobile'
   slots: []
 };
@@ -565,12 +655,14 @@ function addSlot(name){
       mobile: { top: 110, height: 230 }
     },
     brandBg: null,
-    brandTiles: [null, null, null]
+    brandTiles: [null, null, null],
+    brandStore: createBrandStoreState()
   });
   render();
 }
 
 function removeSlot(id){
+  if(state.slots.length <= 1) return;
   state.slots = state.slots.filter(s => s.id !== id);
   render();
 }
@@ -975,13 +1067,77 @@ function renderBrandMobile(slot){
   </div>`;
 }
 
+/* ---- Brand Store builder ---- */
+let brandStoreSectionIdCounter = 0;
+const BRAND_STORE_LIBRARY_ORDER=['full','large','medium','small','text','video','product','productGrid','gallery','backgroundVideo','featuredDeals','recommendedProducts'];
+
+function addBrandStoreSection(slotId,type,beforeId=null){
+  const slot=findSlot(slotId); if(!slot) return;
+  const allowed=canAddBrandStoreSection(slot.brandStore.sections,type); if(!allowed.ok) return;
+  const section={id:`bs-${++brandStoreSectionIdCounter}`,type,desktopAsset:null,mobileAsset:null};
+  const index=beforeId?slot.brandStore.sections.findIndex(s=>s.id===beforeId):-1;
+  if(index>=0) slot.brandStore.sections.splice(index,0,section); else slot.brandStore.sections.push(section);
+  render();
+}
+function removeBrandStoreSection(slotId,sectionId){const slot=findSlot(slotId);if(!slot)return;slot.brandStore.sections=slot.brandStore.sections.filter(s=>s.id!==sectionId);render();}
+function moveBrandStoreSection(slotId,sectionId,direction){
+  const slot=findSlot(slotId);if(!slot)return;const sections=slot.brandStore.sections;const index=sections.findIndex(s=>s.id===sectionId);const next=index+direction;
+  if(index<0||next<0||next>=sections.length)return;[sections[index],sections[next]]=[sections[next],sections[index]];render();
+}
+function readBrandStoreAsset(file){
+  return new Promise(resolve=>{const reader=new FileReader();reader.onerror=()=>resolve(null);reader.onload=()=>{const image=new Image();image.onerror=()=>resolve(null);image.onload=()=>resolve({dataUrl:reader.result,width:image.naturalWidth,height:image.naturalHeight,size:file.size,mime:file.type,name:file.name});image.src=reader.result;};reader.readAsDataURL(file);});
+}
+function openBrandStoreFilePicker(slotId,target,sectionId=null,variant='desktop'){
+  const input=document.createElement('input');input.type='file';input.accept='image/png,image/jpeg,image/webp,image/gif';
+  input.addEventListener('change',async()=>{const file=input.files?.[0];if(!file)return;const asset=await readBrandStoreAsset(file);if(!asset){alert('無法讀取這張圖片');return;}
+    const slot=findSlot(slotId);if(!slot)return;const type=target==='hero'?'header':target==='logo'?'logo':slot.brandStore.sections.find(s=>s.id===sectionId)?.type;
+    const result=validateBrandStoreAsset(type,asset);if(!result.accepted){alert(result.warnings[0].message);return;}asset.warnings=result.warnings;
+    if(target==='hero')slot.brandStore.hero=asset;else if(target==='logo')slot.brandStore.logo=asset;else{const section=slot.brandStore.sections.find(s=>s.id===sectionId);if(section)section[variant==='mobile'?'mobileAsset':'desktopAsset']=asset;}render();
+  });input.click();
+}
+function clearBrandStoreMobileAsset(slotId,sectionId){const slot=findSlot(slotId);const section=slot?.brandStore.sections.find(s=>s.id===sectionId);if(section)section.mobileAsset=null;render();}
+function renderAssetWarning(asset){return asset?.warnings?.length?`<span class="bs-warning">${asset.warnings.map(w=>w.message).join('・')}</span>`:'';}
+function renderBrandStoreModuleLibrary(slot){
+  return `<aside class="bs-library"><h3>Brand Store 區塊</h3><p class="bs-library-note">拖曳或點擊加入右側畫布</p><div class="bs-library-grid">${BRAND_STORE_LIBRARY_ORDER.map(type=>{const rule=BRAND_STORE_TILE_TYPES[type];const allowed=canAddBrandStoreSection(slot.brandStore.sections,type);const size=rule.minDesktop?rule.minDesktop.join(' × '):(rule.functional?'Amazon 原生模組':'');return `<button class="bs-library-item" draggable="${allowed.ok}" ${allowed.ok?'':'disabled'} data-action="add-bs-section" data-bs-type="${type}" data-slot-id="${slot.id}" title="${allowed.reason}"><b>${rule.label}</b><span>${allowed.ok?size:allowed.reason}</span></button>`;}).join('')}</div></aside>`;
+}
+function brandStorePlaceholder(type){
+  const labels={text:'文字內容\n━━━━━━\n━━━━',video:'▶ 影片播放器',product:'商品圖片\n商品名稱・價格',productGrid:'▦ 商品列表（4 欄）',gallery:'▣ 圖片 Gallery',backgroundVideo:'▶ 背景影片',featuredDeals:'優惠商品・價格卡片',recommendedProducts:'為你推薦的商品'};
+  return `<div class="bs-placeholder">${(labels[type]||type).replaceAll('\n','<br>')}</div>`;
+}
+function renderBrandStoreSection(slot,section,device){
+  const rule=BRAND_STORE_TILE_TYPES[section.type];const asset=getBrandStoreAssetForDevice(section,device);const functional=!!rule.functional;
+  const image=asset?`<img src="${asset.dataUrl}" alt="${asset.name}">`:`<div class="bs-placeholder">點擊上傳<br>${rule.label}${rule.minDesktop?`<br>${rule.minDesktop.join(' × ')} px`:''}</div>`;
+  const ratio=device==='mobile'&&asset?asset.width/asset.height:getBrandStoreDisplayRatio(section.type,asset);
+  return `<div class="bs-section type-${functional?'function':section.type}" style="--bs-ratio:${ratio}" draggable="true" data-bs-section-id="${section.id}" data-slot-id="${slot.id}">
+    <div class="bs-section-tools"><button data-action="move-bs-up" data-slot-id="${slot.id}" data-section-id="${section.id}">↑</button><button data-action="move-bs-down" data-slot-id="${slot.id}" data-section-id="${section.id}">↓</button>${!functional&&device==='mobile'?`<button data-action="upload-bs-mobile" data-slot-id="${slot.id}" data-section-id="${section.id}">手機圖</button>${section.mobileAsset?`<button data-action="clear-bs-mobile" data-slot-id="${slot.id}" data-section-id="${section.id}">共用圖</button>`:''}`:''}<button data-action="remove-bs-section" data-slot-id="${slot.id}" data-section-id="${section.id}">✕</button></div>
+    ${functional?brandStorePlaceholder(section.type):`<div class="bs-tile-image" data-action="upload-bs-section" data-slot-id="${slot.id}" data-section-id="${section.id}">${image}</div>`}<span class="bs-size-badge">${rule.label}</span>${renderAssetWarning(asset)}</div>`;
+}
+function renderBrandStoreHeader(slot){const bs=slot.brandStore;return `<div class="bs-header" data-action="upload-bs-hero" data-slot-id="${slot.id}">${bs.hero?`<img src="${bs.hero.dataUrl}" alt="Header">`:`<div class="bs-placeholder">點擊上傳 Header Hero<br>3000 × 600 px</div>`}<div class="bs-safe-zone"></div><div class="bs-logo" data-action="upload-bs-logo" data-slot-id="${slot.id}">${bs.logo?`<img src="${bs.logo.dataUrl}" alt="Logo">`:'Logo<br>400 × 400'}</div>${renderAssetWarning(bs.hero)}</div><div class="bs-nav">首頁　｜　分類一　｜　分類二</div>`;}
+function renderBrandStoreBands(slot){
+  let html='',tiles=[];
+  const flush=()=>{if(tiles.length){html+=`<div class="bs-tile-grid">${tiles.map(s=>renderBrandStoreSection(slot,s,'desktop')).join('')}</div>`;tiles=[];}};
+  for(const section of slot.brandStore.sections){
+    if(section.type==='full'||BRAND_STORE_TILE_TYPES[section.type].functional){flush();html+=`<div class="bs-full-band">${renderBrandStoreSection(slot,section,'desktop')}</div>`;}
+    else tiles.push(section);
+  }
+  flush();return html;
+}
+function renderBrandStoreDesktop(slot){
+  return `<div class="brand-store-builder">${renderBrandStoreModuleLibrary(slot)}<section class="bs-canvas-area"><div class="bs-canvas-head"><div><h3>Brand Store 畫布</h3><span>4 欄排版預覽・${slot.brandStore.sections.length}/20 區塊</span></div></div><div class="bs-store">${renderBrandStoreHeader(slot)}<div class="bs-grid" data-bs-canvas data-slot-id="${slot.id}">${slot.brandStore.sections.length?renderBrandStoreBands(slot):`<div class="bs-empty">把左側區塊拖到這裡<br>或點擊區塊直接加入</div>`}<div class="bs-drop-tail">拖曳到這裡放在最後</div></div></div></section></div>`;
+}
+function renderBrandStoreMobile(slot){
+  const ordered=getMobileSectionOrder(slot.brandStore.sections);return `<div class="brand-store-builder">${renderBrandStoreModuleLibrary(slot)}<section class="bs-canvas-area"><div class="bs-canvas-head"><div><h3>手機版預覽</h3><span>預設共用桌機圖片，可個別設定手機圖</span></div></div><div class="bs-mobile-store">${renderBrandStoreHeader(slot)}<div class="bs-mobile-flow" data-bs-canvas data-slot-id="${slot.id}">${ordered.length?ordered.map(s=>renderBrandStoreSection(slot,s,'mobile')).join(''):`<div class="bs-empty">尚未加入區塊</div>`}</div></div></section></div>`;
+}
+
 function renderSlotMock(slot){
   if(state.placement === 'main'){
     return state.device === 'desktop' ? renderMainDesktop(slot) : renderMainMobile(slot);
   } else if(state.placement === 'aplus'){
     return state.device === 'desktop' ? renderAplusDesktop(slot) : renderAplusMobile(slot);
-  } else {
+  } else if(state.placement === 'brandstory') {
     return state.device === 'desktop' ? renderBrandDesktop(slot) : renderBrandMobile(slot);
+  } else {
+    return state.device === 'desktop' ? renderBrandStoreDesktop(slot) : renderBrandStoreMobile(slot);
   }
 }
 
@@ -1013,7 +1169,7 @@ function render(){
       <div class="slot-toolbar">
         <input class="slot-name" value="${slot.name}" data-id="${slot.id}">
         <span class="hint">點擊圖片區塊即可上傳／更換</span>
-        <button class="remove-btn" data-action="remove-slot" data-slot-id="${slot.id}" title="移除此方案">✕</button>
+        <button class="remove-btn" data-action="remove-slot" data-slot-id="${slot.id}" ${state.slots.length===1?'disabled':''} title="${state.slots.length===1?'至少保留一個設計方案':'移除此方案'}">✕</button>
       </div>
       <div class="mock-frame-wrap">
         ${renderSlotMock(slot)}
@@ -1082,7 +1238,37 @@ slotsContainer.addEventListener('click', e => {
   if(action === 'replace-aplus-carousel'){ e.stopPropagation(); openFilePicker(false, urls => replaceAplusCarouselImage(slotId, Number(t.dataset.index), urls[0])); return; }
   if(action === 'upload-brand-bg'){ openFilePicker(false, urls => setBrandBg(slotId, urls[0])); return; }
   if(action === 'upload-brand-tile'){ openFilePicker(false, urls => setBrandTile(slotId, Number(t.dataset.index), urls[0])); return; }
+  if(action === 'add-bs-section'){ addBrandStoreSection(slotId,t.dataset.bsType); return; }
+  if(action === 'remove-bs-section'){ removeBrandStoreSection(slotId,t.dataset.sectionId); return; }
+  if(action === 'move-bs-up'){ moveBrandStoreSection(slotId,t.dataset.sectionId,-1); return; }
+  if(action === 'move-bs-down'){ moveBrandStoreSection(slotId,t.dataset.sectionId,1); return; }
+  if(action === 'upload-bs-hero'){ openBrandStoreFilePicker(slotId,'hero'); return; }
+  if(action === 'upload-bs-logo'){ e.stopPropagation(); openBrandStoreFilePicker(slotId,'logo'); return; }
+  if(action === 'upload-bs-section'){ openBrandStoreFilePicker(slotId,'section',t.dataset.sectionId,'desktop'); return; }
+  if(action === 'upload-bs-mobile'){ openBrandStoreFilePicker(slotId,'section',t.dataset.sectionId,'mobile'); return; }
+  if(action === 'clear-bs-mobile'){ clearBrandStoreMobileAsset(slotId,t.dataset.sectionId); return; }
 });
+
+let brandStoreDragPayload=null;
+slotsContainer.addEventListener('dragstart',e=>{
+  const library=e.target.closest('.bs-library-item');const section=e.target.closest('.bs-section');
+  if(library&&!library.disabled)brandStoreDragPayload={kind:'new',type:library.dataset.bsType,slotId:Number(library.dataset.slotId)};
+  else if(section)brandStoreDragPayload={kind:'existing',sectionId:section.dataset.bsSectionId,slotId:Number(section.dataset.slotId)};
+});
+function clearBrandStoreDropHint(){slotsContainer.querySelectorAll('.bs-drop-before').forEach(el=>el.classList.remove('bs-drop-before'));}
+slotsContainer.addEventListener('dragover',e=>{
+  if(!brandStoreDragPayload||!e.target.closest('[data-bs-canvas]'))return;
+  e.preventDefault();clearBrandStoreDropHint();
+  const target=e.target.closest('.bs-section,.bs-drop-tail');if(target)target.classList.add('bs-drop-before');
+});
+slotsContainer.addEventListener('drop',e=>{
+  const canvas=e.target.closest('[data-bs-canvas]');if(!canvas||!brandStoreDragPayload)return;e.preventDefault();const slotId=Number(canvas.dataset.slotId);
+  clearBrandStoreDropHint();
+  if(brandStoreDragPayload.kind==='new')addBrandStoreSection(slotId,brandStoreDragPayload.type,e.target.closest('.bs-section')?.dataset.bsSectionId||null);
+  else {const target=e.target.closest('.bs-section');const slot=findSlot(slotId);if(slot){const sections=slot.brandStore.sections;const from=sections.findIndex(s=>s.id===brandStoreDragPayload.sectionId);if(from>=0){const [item]=sections.splice(from,1);const to=target?sections.findIndex(s=>s.id===target.dataset.bsSectionId):-1;if(to>=0)sections.splice(to,0,item);else sections.push(item);render();}}}
+  brandStoreDragPayload=null;
+});
+slotsContainer.addEventListener('dragend',()=>{brandStoreDragPayload=null;clearBrandStoreDropHint();});
 
 document.querySelectorAll('[data-placement]').forEach(btn=>{
   btn.addEventListener('click', ()=>{
@@ -1102,9 +1288,8 @@ document.querySelectorAll('[data-device]').forEach(btn=>{
 });
 document.getElementById('addSlotBtn').addEventListener('click', ()=> addSlot());
 
-// init with two comparison slots
+// init with one design slot
 addSlot('設計 A');
-addSlot('設計 B');
 </script>
 
 </body>
