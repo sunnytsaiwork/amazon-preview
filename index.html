@@ -100,6 +100,9 @@
     color:#dcdcdc;
   }
   .add-btn:hover{ background:#3a3a3d; }
+  .mockup-btn{border:1px solid var(--amz-orange);background:var(--amz-orange);color:#131921;padding:7px 14px;font-size:13px;border-radius:6px;cursor:pointer;font-weight:700;}
+  .mockup-btn:hover{background:#ffd28a;}.mockup-btn:disabled{opacity:.55;cursor:wait;}
+  .mockup-status{font-size:11px;color:var(--text-onDark-muted);min-width:100px;}
 
   /* Brand Store builder */
   .brand-store-builder{display:grid;grid-template-columns:280px minmax(0,1fr);min-height:680px;background:#eef1f4;color:#18212d;align-items:start;}
@@ -574,6 +577,8 @@
     <button class="toggle-btn active" data-device="desktop">🖥️ 電腦版</button>
     <button class="toggle-btn" data-device="mobile">📱 手機版</button>
   </div>
+  <button class="mockup-btn" data-action="download-mockup">下載 Mockup PNG</button>
+  <span id="mockupStatus" class="mockup-status" aria-live="polite"></span>
   <button class="add-btn" id="addSlotBtn">＋ 新增設計方案</button>
 </div>
 
@@ -803,7 +808,7 @@ function renderMainDesktop(slot){
   const heroAction = active ? 'replace-hero' : 'add-images';
 
   return `
-  <div class="browser-frame">
+  <div class="browser-frame mockup-export-root">
     <div class="amz-nav">
       <div class="amz-logo">amazon<span class="dot">.</span></div>
       <div class="amz-search">
@@ -858,7 +863,7 @@ function renderMainMobile(slot){
   }
 
   return `
-  <div class="phone-frame">
+  <div class="phone-frame mockup-export-root">
     <div class="phone-notch"><div class="pill"></div></div>
     <div class="m-topbar">
       <div class="m-icon"></div>
@@ -956,7 +961,7 @@ function renderAplusDesktop(slot){
   const carouselOverlay = hasMain ? aplusCarouselBoxHtml(slot, 'desktop') : '';
   const carouselControls = hasMain ? aplusCarouselControlsHtml(slot) : '';
   return `
-  <div class="browser-frame">
+  <div class="browser-frame mockup-export-root">
     <div class="amz-nav">
       <div class="amz-logo">amazon<span class="dot">.</span></div>
       <div class="amz-search">
@@ -981,7 +986,7 @@ function renderAplusMobile(slot){
   const carouselOverlay = hasMain ? aplusCarouselBoxHtml(slot, 'mobile') : '';
   const carouselControls = hasMain ? aplusCarouselControlsHtml(slot) : '';
   return `
-  <div class="phone-frame">
+  <div class="phone-frame mockup-export-root">
     <div class="phone-notch"><div class="pill"></div></div>
     <div class="m-topbar">
       <div class="m-icon"></div><div class="m-search"></div><div class="m-icon"></div><div class="m-icon"></div>
@@ -1014,7 +1019,7 @@ function renderBrandDesktop(slot){
   const tile1 = brandTileHtml(slot, 1);
   const tile2 = brandTileHtml(slot, 2);
   return `
-  <div class="browser-frame">
+  <div class="browser-frame mockup-export-root">
     <div class="amz-nav">
       <div class="amz-logo">amazon<span class="dot">.</span></div>
       <div class="amz-search">
@@ -1048,7 +1053,7 @@ function renderBrandMobile(slot){
     ? `<img src="${tileSrc}" alt="">`
     : `<div class="ph-pattern" style="position:absolute;inset:0;">點擊上傳<br>362 x 453</div>`;
   return `
-  <div class="phone-frame">
+  <div class="phone-frame mockup-export-root">
     <div class="phone-notch"><div class="pill"></div></div>
     <div class="m-topbar">
       <div class="m-icon"></div><div class="m-search"></div><div class="m-icon"></div><div class="m-icon"></div>
@@ -1121,11 +1126,42 @@ function renderBrandStoreBands(slot){
   flush();return html;
 }
 function renderBrandStoreDesktop(slot){
-  return `<div class="brand-store-builder">${renderBrandStoreModuleLibrary(slot)}<section class="bs-canvas-area"><div class="bs-canvas-head"><div><h3>Brand Store 畫布</h3><span>4 欄排版預覽・${slot.brandStore.sections.length}/20 區塊</span></div></div><div class="bs-store">${renderBrandStoreHeader(slot)}<div class="bs-grid" data-bs-canvas data-slot-id="${slot.id}">${slot.brandStore.sections.length?renderBrandStoreBands(slot):`<div class="bs-empty">把左側區塊拖到這裡<br>或點擊區塊直接加入</div>`}<div class="bs-drop-tail">拖曳到這裡放在最後</div></div></div></section></div>`;
+  return `<div class="brand-store-builder">${renderBrandStoreModuleLibrary(slot)}<section class="bs-canvas-area"><div class="bs-canvas-head"><div><h3>Brand Store 畫布</h3><span>4 欄排版預覽・${slot.brandStore.sections.length}/20 區塊</span></div></div><div class="bs-store mockup-export-root">${renderBrandStoreHeader(slot)}<div class="bs-grid" data-bs-canvas data-slot-id="${slot.id}">${slot.brandStore.sections.length?renderBrandStoreBands(slot):`<div class="bs-empty">把左側區塊拖到這裡<br>或點擊區塊直接加入</div>`}<div class="bs-drop-tail">拖曳到這裡放在最後</div></div></div></section></div>`;
 }
 function renderBrandStoreMobile(slot){
-  const ordered=getMobileSectionOrder(slot.brandStore.sections);return `<div class="brand-store-builder">${renderBrandStoreModuleLibrary(slot)}<section class="bs-canvas-area"><div class="bs-canvas-head"><div><h3>Amazon 手機版預覽</h3><span>版型重新流動，並非裁切桌機畫布；預設共用圖片，可個別設定手機圖</span></div></div><div class="bs-mobile-shell"><div class="bs-mobile-store">${renderBrandStoreHeader(slot,true)}<div class="bs-mobile-flow" data-bs-canvas data-slot-id="${slot.id}">${ordered.length?ordered.map(s=>renderBrandStoreSection(slot,s,'mobile')).join(''):`<div class="bs-empty">尚未加入區塊</div>`}</div></div></div></section></div>`;
+  const ordered=getMobileSectionOrder(slot.brandStore.sections);return `<div class="brand-store-builder">${renderBrandStoreModuleLibrary(slot)}<section class="bs-canvas-area"><div class="bs-canvas-head"><div><h3>Amazon 手機版預覽</h3><span>版型重新流動，並非裁切桌機畫布；預設共用圖片，可個別設定手機圖</span></div></div><div class="bs-mobile-shell mockup-export-root"><div class="bs-mobile-store">${renderBrandStoreHeader(slot,true)}<div class="bs-mobile-flow" data-bs-canvas data-slot-id="${slot.id}">${ordered.length?ordered.map(s=>renderBrandStoreSection(slot,s,'mobile')).join(''):`<div class="bs-empty">尚未加入區塊</div>`}</div></div></div></section></div>`;
 }
+
+function getMockupStyles(){
+  return Array.from(document.styleSheets).map(sheet=>{try{return Array.from(sheet.cssRules).map(rule=>rule.cssText).join('')}catch{return ''}}).join('');
+}
+async function downloadCurrentMockup(){
+  const button=document.querySelector('[data-action="download-mockup"]');
+  const status=document.getElementById('mockupStatus');
+  const root=document.querySelector('.design-slot .mockup-export-root');
+  if(!root){if(status)status.textContent='目前沒有可輸出的預覽';return false;}
+  if(button)button.disabled=true;if(status)status.textContent='正在產生 PNG…';
+  try{
+    await document.fonts?.ready;
+    const rect=root.getBoundingClientRect();
+    const clone=root.cloneNode(true);
+    clone.querySelectorAll('.bs-section-tools,.bs-size-badge,.bs-warning,.bs-drop-tail,.bs-safe-zone,.brandstory-bg-btn,.aplus-carousel-controls,.aplus-position-controls').forEach(el=>el.remove());
+    clone.querySelectorAll('[data-action]').forEach(el=>{el.removeAttribute('data-action');el.removeAttribute('data-slot-id');el.removeAttribute('data-section-id');});
+    const markup=`<svg xmlns="http://www.w3.org/2000/svg" width="${Math.ceil(rect.width)}" height="${Math.ceil(rect.height)}"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml"><style>${getMockupStyles()}</style>${clone.outerHTML}</div></foreignObject></svg>`;
+    const image=new Image();
+    await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=reject;image.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(markup);});
+    const canvas=document.createElement('canvas');canvas.width=Math.ceil(rect.width);canvas.height=Math.ceil(rect.height);
+    canvas.getContext('2d').drawImage(image,0,0);
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+    if(!blob)throw new Error('PNG conversion failed');
+    const slotName=(state.slots[0]?.name||'設計').replace(/[\\/:*?"<>|\s]+/g,'-');
+    const placement={main:'product',aplus:'aplus-content',brandstory:'brand-story',brandstore:'brand-store'}[state.placement]||state.placement;
+    const link=document.createElement('a');link.download=`${slotName}_${placement}_${state.device}.png`;link.href=URL.createObjectURL(blob);link.click();setTimeout(()=>URL.revokeObjectURL(link.href),1000);
+    if(status)status.textContent='已下載 Mockup PNG';return true;
+  }catch(error){console.error(error);if(status)status.textContent='截圖失敗，請再試一次';return false;}
+  finally{if(button)button.disabled=false;}
+}
+window.downloadCurrentMockup=downloadCurrentMockup;
 
 function renderSlotMock(slot){
   if(state.placement === 'main'){
@@ -1180,6 +1216,7 @@ function render(){
 /* ---- delegated events (bound once) ---- */
 const slotsContainer = document.getElementById('slotsContainer');
 const aplusPositionBar = document.getElementById('aplusPositionBar');
+document.querySelector('[data-action="download-mockup"]').addEventListener('click', downloadCurrentMockup);
 
 function handleCarouselRectInput(target){
   if(!target.classList.contains('carousel-rect-range')) return;
