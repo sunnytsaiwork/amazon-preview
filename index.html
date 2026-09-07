@@ -284,6 +284,7 @@
     border-radius:4px;
     overflow:hidden;
   }
+  .design-slot.brand-store-slot{overflow:visible;}
   .amz-search-cat{ background:#e6e6e6; width:34px; }
   .amz-search-input{ flex:1; background:#fff; }
   .amz-search-btn{ width:34px; background:var(--amz-orange); }
@@ -1162,7 +1163,7 @@ function render(){
   container.classList.toggle('layout-desktop', state.device === 'desktop');
   container.classList.toggle('layout-mobile', state.device === 'mobile');
   container.innerHTML = state.slots.map(slot => `
-    <div class="design-slot" data-id="${slot.id}">
+    <div class="design-slot${state.placement === 'brandstore' ? ' brand-store-slot' : ''}" data-id="${slot.id}">
       <div class="slot-toolbar">
         <input class="slot-name" value="${slot.name}" data-id="${slot.id}">
         <span class="hint">點擊圖片區塊即可上傳／更換</span>
