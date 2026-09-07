@@ -102,12 +102,13 @@
   .add-btn:hover{ background:#3a3a3d; }
 
   /* Brand Store builder */
-  .brand-store-builder{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:680px;background:#eef1f4;color:#18212d;}
-  .bs-library{background:#172235;color:#fff;padding:18px;align-self:stretch;}
+  .brand-store-builder{display:grid;grid-template-columns:280px minmax(0,1fr);min-height:680px;background:#eef1f4;color:#18212d;align-items:start;}
+  .bs-library{background:#172235;color:#fff;padding:18px;position:sticky;top:124px;max-height:calc(100vh - 136px);overflow-y:auto;align-self:start;scrollbar-color:#65748a #172235;z-index:10;}
   .bs-library h3{font-size:16px;margin:0 0 4px;}.bs-library-note{font-size:11px;color:#aeb8c8;margin:0 0 14px;}
+  .bs-library-group{margin-top:18px}.bs-library-group:first-of-type{margin-top:0}.bs-library-group-title{display:flex;align-items:center;gap:7px;margin:0 0 8px;font-size:11px;color:#dce5f3;font-weight:700}.bs-library-group-title:after{content:'';height:1px;background:#43536c;flex:1}
   .bs-library-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
   .bs-library-item{border:1px solid #43536c;background:#25344d;color:#fff;border-radius:7px;padding:9px 7px;cursor:grab;text-align:left;min-height:68px;}
-  .bs-library-item:hover{border-color:var(--amz-orange);}.bs-library-item[disabled]{opacity:.38;cursor:not-allowed;}
+  .bs-library-item.is-upload{background:#243d5c;border-color:#507398}.bs-library-item.is-native{background:#493c66;border-color:#79669f}.bs-library-item:hover{border-color:var(--amz-orange);}.bs-library-item[disabled]{opacity:.38;cursor:not-allowed;}
   .bs-library-item b{display:block;font-size:11px;margin-bottom:4px;}.bs-library-item span{display:block;font-size:9px;color:#b7c1ce;line-height:1.35;}
   .bs-canvas-area{padding:20px;overflow:auto;}.bs-canvas-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px;}
   .bs-canvas-head h3{margin:0;font-size:16px;}.bs-canvas-head span{font-size:11px;color:#667286;}
@@ -126,7 +127,8 @@
   .bs-section-tools{position:absolute;right:5px;top:5px;display:flex;gap:4px;z-index:4;}.bs-section-tools button{border:0;background:rgba(19,25,33,.78);color:#fff;border-radius:4px;padding:3px 6px;font-size:10px;cursor:pointer;}
   .bs-size-badge,.bs-warning{position:absolute;left:6px;bottom:6px;z-index:3;border-radius:4px;padding:3px 6px;font-size:9px;background:rgba(255,255,255,.92);color:#44515f;}.bs-warning{background:#fff2cc;color:#8a5400;right:6px;}
   .bs-drop-tail{grid-column:1/-1;border:2px dashed #f3a847;min-height:52px;display:grid;place-items:center;color:#9a5b00;font-size:11px;}
-  .bs-mobile-store{max-width:360px;margin:0 auto;background:#fff;box-shadow:0 5px 24px rgba(20,35,55,.16);padding:7px;}.bs-mobile-store .bs-header{aspect-ratio:5/1}.bs-mobile-flow{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding-top:6px}.bs-mobile-flow .bs-section{min-height:120px;grid-column:1/-1}.bs-mobile-flow .type-small{grid-column:span 1;min-height:110px}
+  .bs-mobile-shell{width:min(100%,390px);margin:0 auto;background:#eaeded;padding:9px;border-radius:20px;box-shadow:0 7px 26px rgba(20,35,55,.2)}
+  .bs-mobile-store{width:100%;max-width:none;margin:0;background:#fff;border-radius:12px;overflow:hidden}.bs-mobile-store .bs-header{aspect-ratio:3.5/1;border:0}.bs-mobile-store .bs-header img{object-fit:cover;object-position:center}.bs-mobile-store .bs-logo{display:none}.bs-mobile-store .bs-safe-zone{display:none}.bs-mobile-nav{height:42px;background:#fff;border-bottom:1px solid #d5d9d9;display:flex;align-items:center;gap:18px;padding:0 13px;overflow-x:auto;white-space:nowrap;font-size:12px;color:#0f1111;scrollbar-width:none}.bs-mobile-nav:before{content:'品牌';display:grid;place-items:center;width:30px;height:30px;flex:0 0 30px;background:#eef0f2;border:1px solid #c7cdd4;font-size:9px;font-weight:700}.bs-mobile-flow{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding-top:4px}.bs-mobile-flow .bs-section{min-height:120px;grid-column:1/-1}.bs-mobile-flow .type-small{grid-column:span 1;min-height:110px}
   .bs-store{container-type:inline-size;}
   .bs-grid{display:block;}
   .bs-tile-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:calc((100cqw - 24px)/4);gap:8px;margin-bottom:8px;}
@@ -138,8 +140,9 @@
   .bs-drop-tail.bs-drop-before{background:#ffe0ab;border-style:solid;}
   .bs-mobile-flow .bs-section:not(.type-function){aspect-ratio:var(--bs-ratio,1);min-height:0;}
   .bs-mobile-flow .bs-section.type-full{aspect-ratio:var(--bs-ratio,2);}
+  .bs-native-demo{position:absolute;inset:0;padding:28px 18px 22px;background:#f7f7f7;color:#0f1111;display:grid;place-items:center}.bs-demo-product{display:grid;grid-template-columns:80px 1fr;gap:13px;align-items:center;width:min(100%,310px)}.bs-demo-product-image,.bs-demo-thumb{background:linear-gradient(145deg,#dbe5ee,#aebdca);border-radius:4px}.bs-demo-product-image{aspect-ratio:1}.bs-demo-copy{display:grid;gap:7px}.bs-demo-line{height:7px;background:#c7cdd1;border-radius:8px}.bs-demo-line.short{width:62%}.bs-demo-price{font-weight:700;color:#b12704}.bs-demo-products{width:100%;display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.bs-demo-product-card{background:#fff;padding:7px;border:1px solid #e0e0e0}.bs-demo-thumb{aspect-ratio:1;margin-bottom:7px}.bs-demo-gallery{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:5px;width:100%;height:100%}.bs-demo-gallery span{background:linear-gradient(145deg,#d9ccdf,#9d8faf)}.bs-demo-gallery span:first-child{grid-row:1/3}.bs-demo-video{width:100%;height:100%;background:linear-gradient(135deg,#75879b,#273748);display:grid;place-items:center}.bs-demo-play{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center}.bs-demo-play svg{width:20px;fill:#232f3e;margin-left:3px}.bs-demo-text{width:min(88%,480px);display:grid;gap:10px;text-align:center}.bs-demo-text strong{font-size:18px}.bs-demo-deal{position:absolute;left:12px;top:12px;background:#cc0c39;color:#fff;padding:4px 7px;font-size:10px;font-weight:700}.bs-mobile-flow .bs-native-demo{padding:24px 10px 20px}.bs-mobile-flow .bs-demo-products{grid-template-columns:repeat(2,1fr)}.bs-mobile-flow .bs-demo-products .bs-demo-product-card:nth-child(n+3){display:none}
   .remove-btn:disabled{opacity:.25;cursor:not-allowed!important;}
-  @media(max-width:780px){.brand-store-builder{grid-template-columns:1fr}.bs-library-grid{grid-template-columns:repeat(4,1fr)}.bs-library{padding:12px}.bs-canvas-area{padding:12px}}
+  @media(max-width:780px){.brand-store-builder{grid-template-columns:1fr}.bs-library{position:sticky;top:116px;max-height:210px;padding:12px;align-self:start}.bs-library-grid{grid-template-columns:repeat(2,1fr)}.bs-canvas-area{padding:12px}}
 
   /* A+ Content: carousel position controls live in a full-width sticky bar ABOVE the
      preview (not a sidebar) so it never eats into the preview's width — the whole point
@@ -590,6 +593,9 @@ const BRAND_STORE_TILE_TYPES = Object.freeze({
   medium:{label:'Medium',minDesktop:[1500,750],grid:[2,1]},
   small:{label:'Small',minDesktop:[750,750],grid:[1,1]},
   text:{label:'文字',grid:[4,1],functional:true}, video:{label:'影片',grid:[4,2],functional:true},
+  imageTextOverlay:{label:'圖片＋文字（疊加）',minDesktop:[3000,1500],sizes:'Full 3000 × 1500・Large 1500 × 1500・Medium 1500 × 750・Small 750 × 750',grid:[4,2]},
+  imageTextNext:{label:'圖片＋文字（並排）',minDesktop:[1500,1500],sizes:'Full/Large 1500 × 1500・Medium/Small 750 × 750',grid:[4,2]},
+  shoppableImage:{label:'可購物圖片',minDesktop:[1500,750],sizes:'Full 1500 × 750（建議 3000 × 1500）・Large 1500 × 1500・Medium 1500 × 750・Small 750 × 750',grid:[4,2]},
   product:{label:'單一商品',grid:[2,2],functional:true}, productGrid:{label:'商品列表',grid:[4,2],functional:true},
   gallery:{label:'圖片 Gallery',grid:[4,2],functional:true}, backgroundVideo:{label:'背景影片',grid:[4,2],functional:true},
   featuredDeals:{label:'優惠商品',grid:[4,2],functional:true}, recommendedProducts:{label:'推薦商品',grid:[4,2],functional:true}
@@ -1069,7 +1075,8 @@ function renderBrandMobile(slot){
 
 /* ---- Brand Store builder ---- */
 let brandStoreSectionIdCounter = 0;
-const BRAND_STORE_LIBRARY_ORDER=['full','large','medium','small','text','video','product','productGrid','gallery','backgroundVideo','featuredDeals','recommendedProducts'];
+const BRAND_STORE_UPLOAD_ORDER=['full','large','medium','small','imageTextOverlay','imageTextNext','shoppableImage'];
+const BRAND_STORE_NATIVE_ORDER=['text','video','product','productGrid','gallery','backgroundVideo','featuredDeals','recommendedProducts'];
 
 function addBrandStoreSection(slotId,type,beforeId=null){
   const slot=findSlot(slotId); if(!slot) return;
@@ -1098,11 +1105,15 @@ function openBrandStoreFilePicker(slotId,target,sectionId=null,variant='desktop'
 function clearBrandStoreMobileAsset(slotId,sectionId){const slot=findSlot(slotId);const section=slot?.brandStore.sections.find(s=>s.id===sectionId);if(section)section.mobileAsset=null;render();}
 function renderAssetWarning(asset){return asset?.warnings?.length?`<span class="bs-warning">${asset.warnings.map(w=>w.message).join('・')}</span>`:'';}
 function renderBrandStoreModuleLibrary(slot){
-  return `<aside class="bs-library"><h3>Brand Store 區塊</h3><p class="bs-library-note">拖曳或點擊加入右側畫布</p><div class="bs-library-grid">${BRAND_STORE_LIBRARY_ORDER.map(type=>{const rule=BRAND_STORE_TILE_TYPES[type];const allowed=canAddBrandStoreSection(slot.brandStore.sections,type);const size=rule.minDesktop?rule.minDesktop.join(' × '):(rule.functional?'Amazon 原生模組':'');return `<button class="bs-library-item" draggable="${allowed.ok}" ${allowed.ok?'':'disabled'} data-action="add-bs-section" data-bs-type="${type}" data-slot-id="${slot.id}" title="${allowed.reason}"><b>${rule.label}</b><span>${allowed.ok?size:allowed.reason}</span></button>`;}).join('')}</div></aside>`;
+  const group=(title,types,kind)=>`<section class="bs-library-group"><p class="bs-library-group-title">${title}</p><div class="bs-library-grid">${types.map(type=>{const rule=BRAND_STORE_TILE_TYPES[type];const allowed=canAddBrandStoreSection(slot.brandStore.sections,type);const size=rule.sizes||rule.minDesktop?.join(' × ')||(type==='video'?'封面 Full 3000 × 1500・Large 1500 × 1500・Medium 1500 × 750；影片最低 1280 × 640':'Amazon 自動內容');const kindClass=kind==='upload'?'is-upload':'is-native';return `<button class="bs-library-item ${kindClass}" draggable="${allowed.ok}" ${allowed.ok?'':'disabled'} data-action="add-bs-section" data-bs-type="${type}" data-slot-id="${slot.id}" title="${allowed.reason}"><b>${rule.label}</b><span>${allowed.ok?size:allowed.reason}</span></button>`;}).join('')}</div></section>`;
+  return `<aside class="bs-library"><h3>Brand Store 區塊</h3><p class="bs-library-note">拖曳或點擊加入右側畫布<br>Header 3000 × 600・Logo 400 × 400</p>${group('圖片上傳區塊',BRAND_STORE_UPLOAD_ORDER,'upload')}${group('Amazon 原生模組',BRAND_STORE_NATIVE_ORDER,'native')}</aside>`;
 }
 function brandStorePlaceholder(type){
-  const labels={text:'文字內容\n━━━━━━\n━━━━',video:'▶ 影片播放器',product:'商品圖片\n商品名稱・價格',productGrid:'▦ 商品列表（4 欄）',gallery:'▣ 圖片 Gallery',backgroundVideo:'▶ 背景影片',featuredDeals:'優惠商品・價格卡片',recommendedProducts:'為你推薦的商品'};
-  return `<div class="bs-placeholder">${(labels[type]||type).replaceAll('\n','<br>')}</div>`;
+  const play=`<div class="bs-demo-video"><span class="bs-demo-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></div>`;
+  const product=`<div class="bs-demo-product"><span class="bs-demo-product-image"></span><span class="bs-demo-copy"><span class="bs-demo-line"></span><span class="bs-demo-line short"></span><span class="bs-demo-price">NT$ 999</span></span></div>`;
+  const products=`<div class="bs-demo-products">${Array.from({length:4},()=>`<span class="bs-demo-product-card"><span class="bs-demo-thumb"></span><span class="bs-demo-line"></span></span>`).join('')}</div>`;
+  const demos={text:`<div class="bs-demo-text"><strong>品牌標題文字</strong><span>在這裡呈現品牌故事與重點內容</span></div>`,video:play,backgroundVideo:play,product,gallery:`<div class="bs-demo-gallery"><span></span><span></span><span></span></div>`,productGrid:products,recommendedProducts:products,featuredDeals:`<span class="bs-demo-deal">限時優惠</span>${products}`};
+  return `<div class="bs-native-demo ${type==='product'?'bs-demo-product-wrap':''}">${demos[type]||`<div class="bs-demo-text"><strong>Amazon 原生模組</strong></div>`}</div>`;
 }
 function renderBrandStoreSection(slot,section,device){
   const rule=BRAND_STORE_TILE_TYPES[section.type];const asset=getBrandStoreAssetForDevice(section,device);const functional=!!rule.functional;
@@ -1112,12 +1123,12 @@ function renderBrandStoreSection(slot,section,device){
     <div class="bs-section-tools"><button data-action="move-bs-up" data-slot-id="${slot.id}" data-section-id="${section.id}">↑</button><button data-action="move-bs-down" data-slot-id="${slot.id}" data-section-id="${section.id}">↓</button>${!functional&&device==='mobile'?`<button data-action="upload-bs-mobile" data-slot-id="${slot.id}" data-section-id="${section.id}">手機圖</button>${section.mobileAsset?`<button data-action="clear-bs-mobile" data-slot-id="${slot.id}" data-section-id="${section.id}">共用圖</button>`:''}`:''}<button data-action="remove-bs-section" data-slot-id="${slot.id}" data-section-id="${section.id}">✕</button></div>
     ${functional?brandStorePlaceholder(section.type):`<div class="bs-tile-image" data-action="upload-bs-section" data-slot-id="${slot.id}" data-section-id="${section.id}">${image}</div>`}<span class="bs-size-badge">${rule.label}</span>${renderAssetWarning(asset)}</div>`;
 }
-function renderBrandStoreHeader(slot){const bs=slot.brandStore;return `<div class="bs-header" data-action="upload-bs-hero" data-slot-id="${slot.id}">${bs.hero?`<img src="${bs.hero.dataUrl}" alt="Header">`:`<div class="bs-placeholder">點擊上傳 Header Hero<br>3000 × 600 px</div>`}<div class="bs-safe-zone"></div><div class="bs-logo" data-action="upload-bs-logo" data-slot-id="${slot.id}">${bs.logo?`<img src="${bs.logo.dataUrl}" alt="Logo">`:'Logo<br>400 × 400'}</div>${renderAssetWarning(bs.hero)}</div><div class="bs-nav">首頁　｜　分類一　｜　分類二</div>`;}
+function renderBrandStoreHeader(slot,mobile=false){const bs=slot.brandStore;return `<div class="bs-header" data-action="upload-bs-hero" data-slot-id="${slot.id}">${bs.hero?`<img src="${bs.hero.dataUrl}" alt="Header">`:`<div class="bs-placeholder">點擊上傳 Header Hero<br>3000 × 600 px</div>`}<div class="bs-safe-zone"></div><div class="bs-logo" data-action="upload-bs-logo" data-slot-id="${slot.id}">${bs.logo?`<img src="${bs.logo.dataUrl}" alt="Logo">`:'Logo<br>400 × 400'}</div>${renderAssetWarning(bs.hero)}</div><div class="${mobile?'bs-mobile-nav':'bs-nav'}">首頁　　分類一　　分類二　　最新商品</div>`;}
 function renderBrandStoreBands(slot){
   let html='',tiles=[];
   const flush=()=>{if(tiles.length){html+=`<div class="bs-tile-grid">${tiles.map(s=>renderBrandStoreSection(slot,s,'desktop')).join('')}</div>`;tiles=[];}};
   for(const section of slot.brandStore.sections){
-    if(section.type==='full'||BRAND_STORE_TILE_TYPES[section.type].functional){flush();html+=`<div class="bs-full-band">${renderBrandStoreSection(slot,section,'desktop')}</div>`;}
+    if(section.type==='full'||BRAND_STORE_TILE_TYPES[section.type].functional||['imageTextOverlay','imageTextNext','shoppableImage'].includes(section.type)){flush();html+=`<div class="bs-full-band">${renderBrandStoreSection(slot,section,'desktop')}</div>`;}
     else tiles.push(section);
   }
   flush();return html;
@@ -1126,7 +1137,7 @@ function renderBrandStoreDesktop(slot){
   return `<div class="brand-store-builder">${renderBrandStoreModuleLibrary(slot)}<section class="bs-canvas-area"><div class="bs-canvas-head"><div><h3>Brand Store 畫布</h3><span>4 欄排版預覽・${slot.brandStore.sections.length}/20 區塊</span></div></div><div class="bs-store">${renderBrandStoreHeader(slot)}<div class="bs-grid" data-bs-canvas data-slot-id="${slot.id}">${slot.brandStore.sections.length?renderBrandStoreBands(slot):`<div class="bs-empty">把左側區塊拖到這裡<br>或點擊區塊直接加入</div>`}<div class="bs-drop-tail">拖曳到這裡放在最後</div></div></div></section></div>`;
 }
 function renderBrandStoreMobile(slot){
-  const ordered=getMobileSectionOrder(slot.brandStore.sections);return `<div class="brand-store-builder">${renderBrandStoreModuleLibrary(slot)}<section class="bs-canvas-area"><div class="bs-canvas-head"><div><h3>手機版預覽</h3><span>預設共用桌機圖片，可個別設定手機圖</span></div></div><div class="bs-mobile-store">${renderBrandStoreHeader(slot)}<div class="bs-mobile-flow" data-bs-canvas data-slot-id="${slot.id}">${ordered.length?ordered.map(s=>renderBrandStoreSection(slot,s,'mobile')).join(''):`<div class="bs-empty">尚未加入區塊</div>`}</div></div></section></div>`;
+  const ordered=getMobileSectionOrder(slot.brandStore.sections);return `<div class="brand-store-builder">${renderBrandStoreModuleLibrary(slot)}<section class="bs-canvas-area"><div class="bs-canvas-head"><div><h3>Amazon 手機版預覽</h3><span>版型重新流動，並非裁切桌機畫布；預設共用圖片，可個別設定手機圖</span></div></div><div class="bs-mobile-shell"><div class="bs-mobile-store">${renderBrandStoreHeader(slot,true)}<div class="bs-mobile-flow" data-bs-canvas data-slot-id="${slot.id}">${ordered.length?ordered.map(s=>renderBrandStoreSection(slot,s,'mobile')).join(''):`<div class="bs-empty">尚未加入區塊</div>`}</div></div></div></section></div>`;
 }
 
 function renderSlotMock(slot){
