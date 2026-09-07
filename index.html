@@ -110,6 +110,7 @@
   .bs-library-item{border:1px solid #43536c;background:#25344d;color:#fff;border-radius:7px;padding:9px 7px;cursor:grab;text-align:left;min-height:68px;}
   .bs-library-item.is-upload{background:#243d5c;border-color:#507398}.bs-library-item:hover{border-color:var(--amz-orange);}.bs-library-item[disabled]{opacity:.38;cursor:not-allowed;}
   .bs-library-item b{display:block;font-size:11px;margin-bottom:4px;}.bs-library-item span{display:block;font-size:9px;color:#b7c1ce;line-height:1.35;}
+  .bs-library-item small{display:block;margin-top:4px;color:#91a4ba;font-size:8px;line-height:1.3;}
   .bs-canvas-area{padding:20px;overflow:auto;}.bs-canvas-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px;}
   .bs-canvas-head h3{margin:0;font-size:16px;}.bs-canvas-head span{font-size:11px;color:#667286;}
   .bs-store{max-width:1000px;margin:0 auto;background:#fff;box-shadow:0 5px 24px rgba(20,35,55,.16);padding:10px;}
@@ -580,21 +581,17 @@
 <main id="slotsContainer"></main>
 
 <footer class="tips">
-  <b>使用提示：</b>所有圖片只在瀏覽器本機處理，不會上傳到伺服器。初始只有一組設計，需要比較時可按「新增設計方案」。「商品主圖／圖庫」最多 7 張；「A+ Content」桌機寬 1464、手機寬 600，高度不限；「Brand Story」背景為桌機 1464 × 625、手機 463 × 625，前景圖卡 362 × 453。「Brand Store」可從左側拖曳或點擊加入 Full width、Large、Medium、Small 與各尺寸的可購物圖片；桌機與手機預設共用圖片，手機預覽可為個別區塊選用自訂圖片。重新整理頁面會清空本次預覽內容。
+  <b>使用提示：</b>所有圖片只在瀏覽器本機處理，不會上傳到伺服器。初始只有一組設計，需要比較時可按「新增設計方案」。「商品主圖／圖庫」最多 7 張；「A+ Content」桌機寬 1464、手機寬 600，高度不限；「Brand Story」背景為桌機 1464 × 625、手機 463 × 625，前景圖卡 362 × 453。「Brand Store」可從左側拖曳或點擊加入 Full width、Large、Medium、Small；桌機與手機預設共用圖片，手機預覽可為個別區塊選用自訂圖片。重新整理頁面會清空本次預覽內容。
 </footer>
 
 <script id="brand-store-logic">
 const BRAND_STORE_TILE_TYPES = Object.freeze({
   header:{label:'Header',minDesktop:[3000,600],grid:[4,1]},
   logo:{label:'Logo',minDesktop:[400,400],grid:[1,1]},
-  full:{label:'Full width',minDesktop:[1500,20],recommendedWidth:3000,grid:[4,2]},
+  full:{label:'Full width',minDesktop:[1500,20],recommendedWidth:3000,displaySize:'寬 3000 px・高度自訂',note:'Amazon 最低 1500 × 20 px',grid:[4,2]},
   large:{label:'Large',minDesktop:[1500,1500],grid:[2,2]},
   medium:{label:'Medium',minDesktop:[1500,750],grid:[2,1]},
   small:{label:'Small',minDesktop:[750,750],grid:[1,1]},
-  shoppableFull:{label:'可購物圖片 Full width',minDesktop:[1500,750],recommended:[3000,1500],tileSize:'full',grid:[4,2]},
-  shoppableLarge:{label:'可購物圖片 Large',minDesktop:[1500,1500],tileSize:'large',grid:[2,2]},
-  shoppableMedium:{label:'可購物圖片 Medium',minDesktop:[1500,750],tileSize:'medium',grid:[2,1]},
-  shoppableSmall:{label:'可購物圖片 Small',minDesktop:[750,750],tileSize:'small',grid:[1,1]}
 });
 const BRAND_STORE_LIMITS = Object.freeze({sections:20,backgroundVideo:4,productGrid:1,gallery:1,featuredDeals:1,recommendedProducts:1});
 function createBrandStoreState(){return {hero:null,logo:null,sections:[]};}
@@ -1072,7 +1069,7 @@ function renderBrandMobile(slot){
 
 /* ---- Brand Store builder ---- */
 let brandStoreSectionIdCounter = 0;
-const BRAND_STORE_UPLOAD_ORDER=['full','large','medium','small','shoppableFull','shoppableLarge','shoppableMedium','shoppableSmall'];
+const BRAND_STORE_UPLOAD_ORDER=['full','large','medium','small'];
 
 function addBrandStoreSection(slotId,type,beforeId=null){
   const slot=findSlot(slotId); if(!slot) return;
@@ -1101,7 +1098,7 @@ function openBrandStoreFilePicker(slotId,target,sectionId=null,variant='desktop'
 function clearBrandStoreMobileAsset(slotId,sectionId){const slot=findSlot(slotId);const section=slot?.brandStore.sections.find(s=>s.id===sectionId);if(section)section.mobileAsset=null;render();}
 function renderAssetWarning(asset){return asset?.warnings?.length?`<span class="bs-warning">${asset.warnings.map(w=>w.message).join('・')}</span>`:'';}
 function renderBrandStoreModuleLibrary(slot){
-  const group=(title,types,kind)=>`<section class="bs-library-group"><p class="bs-library-group-title">${title}</p><div class="bs-library-grid">${types.map(type=>{const rule=BRAND_STORE_TILE_TYPES[type];const allowed=canAddBrandStoreSection(slot.brandStore.sections,type);const size=rule.sizes||rule.minDesktop?.join(' × ')||(type==='video'?'封面 Full 3000 × 1500・Large 1500 × 1500・Medium 1500 × 750；影片最低 1280 × 640':'Amazon 自動內容');const kindClass=kind==='upload'?'is-upload':'is-native';return `<button class="bs-library-item ${kindClass}" draggable="${allowed.ok}" ${allowed.ok?'':'disabled'} data-action="add-bs-section" data-bs-type="${type}" data-slot-id="${slot.id}" title="${allowed.reason}"><b>${rule.label}</b><span>${allowed.ok?size:allowed.reason}</span></button>`;}).join('')}</div></section>`;
+  const group=(title,types,kind)=>`<section class="bs-library-group"><p class="bs-library-group-title">${title}</p><div class="bs-library-grid">${types.map(type=>{const rule=BRAND_STORE_TILE_TYPES[type];const allowed=canAddBrandStoreSection(slot.brandStore.sections,type);const size=rule.displaySize||rule.minDesktop?.join(' × ');const kindClass=kind==='upload'?'is-upload':'is-native';return `<button class="bs-library-item ${kindClass}" draggable="${allowed.ok}" ${allowed.ok?'':'disabled'} data-action="add-bs-section" data-bs-type="${type}" data-slot-id="${slot.id}" title="${allowed.reason}"><b>${rule.label}</b><span>${allowed.ok?`${size}${rule.note?`<small>${rule.note}</small>`:''}`:allowed.reason}</span></button>`;}).join('')}</div></section>`;
   return `<aside class="bs-library"><h3>Brand Store 區塊</h3><p class="bs-library-note">拖曳或點擊加入右側畫布<br>Header 3000 × 600・Logo 400 × 400</p>${group('圖片上傳區塊',BRAND_STORE_UPLOAD_ORDER,'upload')}</aside>`;
 }
 function renderBrandStoreSection(slot,section,device){
