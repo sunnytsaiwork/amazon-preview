@@ -1145,12 +1145,26 @@ async function downloadCurrentMockup(){
     await document.fonts?.ready;
     const rect=root.getBoundingClientRect();
     const clone=root.cloneNode(true);
+    const width=Math.max(1,Math.ceil(rect.width));
+    const height=Math.max(1,Math.ceil(rect.height));
+    clone.style.width=`${width}px`;
+    clone.style.height=`${height}px`;
+    clone.style.maxWidth='none';
+    clone.style.margin='0';
     clone.querySelectorAll('.bs-section-tools,.bs-size-badge,.bs-warning,.bs-drop-tail,.bs-safe-zone,.brandstory-bg-btn,.aplus-carousel-controls,.aplus-position-controls').forEach(el=>el.remove());
     clone.querySelectorAll('[data-action]').forEach(el=>{el.removeAttribute('data-action');el.removeAttribute('data-slot-id');el.removeAttribute('data-section-id');});
-    const markup=`<svg xmlns="http://www.w3.org/2000/svg" width="${Math.ceil(rect.width)}" height="${Math.ceil(rect.height)}"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml"><style>${getMockupStyles()}</style>${clone.outerHTML}</div></foreignObject></svg>`;
+    const wrapper=document.createElement('div');
+    const exportStyle=document.createElement('style');
+    exportStyle.textContent=getMockupStyles();
+    wrapper.append(exportStyle,clone);
+    const markup=`<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><foreignObject x="0" y="0" width="${width}" height="${height}">${new XMLSerializer().serializeToString(wrapper)}</foreignObject></svg>`;
     const image=new Image();
-    await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=reject;image.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(markup);});
-    const canvas=document.createElement('canvas');canvas.width=Math.ceil(rect.width);canvas.height=Math.ceil(rect.height);
+    const svgUrl='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(markup);
+    try{
+      await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=()=>reject(new Error('SVG preview could not be rasterized'));image.src=svgUrl;});
+      if(image.decode)await image.decode().catch(()=>{});
+    }finally{image.onload=null;image.onerror=null;}
+    const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;
     canvas.getContext('2d').drawImage(image,0,0);
     const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
     if(!blob)throw new Error('PNG conversion failed');
